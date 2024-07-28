@@ -1,0 +1,57 @@
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+
+.login-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 360px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.login-card .card-body {
+    padding: 2rem;
+}
+
+.login-card .card-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.login-card .form-label {
+    font-weight: bold;
+}
+
+.login-card .form-control {
+    background: #e9ecef;
+    border: none;
+    border-radius: 0.25rem;
+}
+
+.login-card .btn-primary {
+    background: #6200ea;
+    border: none;
+    border-radius: 0.25rem;
+}
+
+.login-card .btn-secondary {
+    background: #343a40;
+    border: none;
+    border-radius: 0.25rem;
+    margin-top: 1rem;
+}

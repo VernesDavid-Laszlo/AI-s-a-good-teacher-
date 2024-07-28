@@ -1,38 +1,47 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import '../styles/Login.css';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            alert('Login successful');
+            navigate('/home');
         } catch (error) {
             console.error("Error logging in user", error);
-            alert(error.message);
+            alert('Invalid email or password');
         }
     };
 
+    const handleSignUpClick = () => {
+        navigate('/register');
+    };
+
     return (
-        <div className="full-height-center">
-            <div className="card bg-dark text-white">
+        <div className="login-container d-flex align-items-center justify-content-center">
+            <div className="login-card card">
                 <div className="card-body">
                     <h2 className="card-title text-center">Login</h2>
                     <form onSubmit={handleLogin}>
                         <div className="mb-3">
-                            <label className="form-label">Email address</label>
-                            <input type="email" className="form-control bg-secondary text-white" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            <label className="form-label">Username</label>
+                            <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Password</label>
-                            <input type="password" className="form-control bg-secondary text-white" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                            <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">Login</button>
+                        <button type="submit" className="btn btn-primary w-100">Submit</button>
                     </form>
+                    <p className="text-center mt-3">Don't have an account?</p>
+                    <button className="btn btn-secondary w-100" onClick={handleSignUpClick}>Sign up</button>
                 </div>
             </div>
         </div>

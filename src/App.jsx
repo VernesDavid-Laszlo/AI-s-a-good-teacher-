@@ -1,21 +1,31 @@
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase-config';
 import Register from './components/Register';
 import Login from './components/Login.jsx';
-import './styles/style.css'
+import Home from './components/Home';
+import './styles/style.css';
 
 function App() {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     return (
         <Router>
-            <div className="container mt-5">
-                <nav className="mb-4">
-                    <Link to="/register" className="btn btn-primary mx-1">Register</Link>
-                    <Link to="/login" className="btn btn-secondary mx-1">Login</Link>
-                </nav>
-                <Routes>
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                </Routes>
-            </div>
+            <Routes>
+                <Route path="/" element={user ? <Navigate replace to="/home" /> : <Navigate replace to="/login" />} />
+                <Route path="/register" element={user ? <Navigate replace to="/home" /> : <Register />} />
+                <Route path="/login" element={user ? <Navigate replace to="/home" /> : <Login />} />
+                <Route path="/home" element={user ? <Home user={user} /> : <Navigate replace to="/login" />} />
+            </Routes>
         </Router>
     );
 }
