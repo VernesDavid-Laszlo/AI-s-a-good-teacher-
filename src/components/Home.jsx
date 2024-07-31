@@ -1,43 +1,94 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase-config';
+import { useEffect, useState } from 'react';
+import Header from '../components/Header';
+import { auth, db } from '../firebase-config';
+import { doc, getDoc } from 'firebase/firestore';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/Home.css';
+import { useNavigate } from "react-router-dom";
+import '../styles/Home.css'; // Import custom CSS
 
-function Home({ user }) {
+function Home() {
+    const [userData, setUserData] = useState({ username: '', email: '' });
     const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        await signOut(auth);
-        navigate('/login');
+    const fetchUserData = async (user) => {
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            return userSnap.data();
+        } else {
+            console.log('No such document!');
+            return null;
+        }
     };
 
+    useEffect(() => {
+        const fetchAndSetUserData = async () => {
+            const user = auth.currentUser;
+            if (user) {
+                const data = await fetchUserData(user);
+                if (data) {
+                    setUserData({ username: data.username, email: user.email });
+                }
+            } else {
+                navigate('/login');
+            }
+        };
+
+        fetchAndSetUserData();
+    }, []);
+
+    const renderCardWithImage1 = () => (
+        <div className="home-section row align-items-center">
+            <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
+                <div className="home-container">
+                    <h1 className="welcome-text">Welcome to our educational platform</h1>
+                    <p></p>
+                    <p className="slogan-text">Where advanced AI meets expert instruction for interactive and innovative learning.</p>
+                </div>
+            </div>
+            <div className="col-md-6 d-flex justify-content-center">
+                <img src="/laptop.png" alt="AI" className="home-image"/>
+            </div>
+        </div>
+    );
+    const renderCardWithImage2 = () => (
+        <div className="home-section row align-items-center">
+            <div className="col-md-6 d-flex justify-content-center">
+                <img src="/ai.png" alt="AI" className="home-image"/>
+            </div>
+            <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
+                <div className="home-container">
+                    <h1 className="welcome-text">1</h1>
+                    <p></p>
+                    <p className="slogan-text">Where advanced AI meets expert instruction for interactive and innovative learning.</p>
+                </div>
+            </div>
+        </div>
+    );
+    const renderCardWithImage3 = () => (
+        <div className="home-section row align-items-center">
+            <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
+                <div className="home-container">
+                    <h1 className="welcome-text">1</h1>
+                    <p></p>
+                    <p className="slogan-text">Where advanced AI meets expert instruction for interactive and innovative
+                        learning.</p>
+                </div>
+            </div>
+            <div className="col-md-6 d-flex justify-content-center">
+                <img src="/teacher.png" alt="AI" className="home-image"/>
+            </div>
+        </div>
+    );
+
     return (
-        <div>
-            <header className="app-header">
-                <nav className="navbar navbar-expand-lg">
-                    <div className="container-fluid">
-                        <div className="collapse navbar-collapse justify-content-center">
-                            <ul className="navbar-nav">
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/home">Home</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/profile">Profile</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <button className="nav-link btn" onClick={handleLogout}>Logout</button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="navbar-text text-white ms-auto">
-                            {user.email}
-                        </div>
-                    </div>
-                </nav>
-            </header>
-            <div className="content">
-                {/* Your main content goes here */}
+        <div className="home-background">
+            <Header user={userData}/>
+            <div className="container-fluid">
+                {renderCardWithImage1()}
+                {renderCardWithImage2()}
+                {renderCardWithImage3()}
             </div>
         </div>
     );
