@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase-config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import '../styles/Login.css';
 
@@ -15,15 +15,31 @@ function Register() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
+            // Create user with email and password
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            await setDoc(doc(db, "users", user.uid), {
-                email: user.email,
-                username: username,
-                role: parseInt(role), // Convert role to number
-            });
-            alert('Registration successful. Click on sign in to continue');
-            navigate('/'); // Navigate to the home page or any other page after successful registration
+
+            // Send verification email
+            await sendEmailVerification(user);
+            alert('Verification email sent. Please check your inbox.');
+
+            // Save user data to Firestore after email verification
+            const checkEmailVerified = setInterval(async () => {
+                // Reload user data
+                await user.reload();
+                if (user.emailVerified) {
+                    clearInterval(checkEmailVerified);
+                    // Save to Firestore
+                    await setDoc(doc(db, "users", user.uid), {
+                        email: user.email,
+                        username: username,
+                        role: parseInt(role),
+                    });
+                    alert('Email verified. Registration complete.');
+                    navigate('/login'); // Navigate to login page
+                }
+            }, 1000); // Check every 1 second for email verification
+
         } catch (error) {
             console.error("Error registering user", error);
             alert(error.message);

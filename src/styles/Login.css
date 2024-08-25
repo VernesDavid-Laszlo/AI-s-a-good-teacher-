@@ -55,3 +55,14 @@ html, body, #root {
     border-radius: 0.25rem;
     margin-top: 1rem;
 }
+
+
+.forgot-password-link {
+    color: darkblue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.forgot-password-link:hover {
+    color: blue;
+}

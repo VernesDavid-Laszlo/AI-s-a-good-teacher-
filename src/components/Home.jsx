@@ -58,10 +58,10 @@ function Home() {
                 <img src="/ai.png" alt="AI" className="home-image"/>
             </div>
             <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
-                <div className="home-container">
+                <div className="home-container2">
                     <h1 className="welcome-text">1</h1>
                     <p></p>
-                    <p className="slogan-text">Where advanced AI meets expert instruction for interactive and innovative learning.</p>
+                    <p className="slogan-text">text1</p>
                 </div>
             </div>
         </div>
@@ -70,10 +70,9 @@ function Home() {
         <div className="home-section row align-items-center">
             <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
                 <div className="home-container">
-                    <h1 className="welcome-text">1</h1>
+                    <h1 className="welcome-text">2</h1>
                     <p></p>
-                    <p className="slogan-text">Where advanced AI meets expert instruction for interactive and innovative
-                        learning.</p>
+                    <p className="slogan-text">text2</p>
                 </div>
             </div>
             <div className="col-md-6 d-flex justify-content-center">
@@ -83,12 +82,14 @@ function Home() {
     );
 
     return (
-        <div className="home-background">
-            <Header user={userData}/>
-            <div className="container-fluid">
-                {renderCardWithImage1()}
-                {renderCardWithImage2()}
-                {renderCardWithImage3()}
+        <div className="home-page">
+            <div className="home-background">
+                <Header user={userData}/>
+                <div className="container-fluid">
+                    {renderCardWithImage1()}
+                    {renderCardWithImage2()}
+                    {renderCardWithImage3()}
+                </div>
             </div>
         </div>
     );
