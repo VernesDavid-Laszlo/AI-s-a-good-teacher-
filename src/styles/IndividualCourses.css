@@ -1,0 +1,41 @@
+.indCourses-page {
+    background-color: #E8EAF6;
+    width: 100%;
+    height: 100%;
+}
+
+.indCourses-background {
+    background-color: #E8EAF6;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 100px;
+    padding-bottom: 20px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.courses-container h1 {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.custom-container {
+    padding: 20px;
+    max-width: calc(100% + 200px);
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 7px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+@media (max-width: 768px) {
+    .custom-container {
+        max-width: 90%;
+        margin: 0 5%;
+    }
+}

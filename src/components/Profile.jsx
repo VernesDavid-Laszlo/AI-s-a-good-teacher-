@@ -108,7 +108,7 @@ function Profile() {
                                 <>
                                     <p className="title-container">Welcome to your profile!</p>
                                     <p>Username: {userData.username}</p>
-                                    <p>Role: {getRoleLabel(userData.role)}</p>
+                                    <p>{getRoleLabel(userData.role)}</p>
                                     <p>Email: {user?.email}</p>
                                 </>
                             )}

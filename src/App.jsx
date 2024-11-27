@@ -9,18 +9,24 @@ import Courses from "./components/Courses";
 import Dashboard from "./components/Dashboard";
 import Notifications from "./components/Notifications";
 import Profile from "./components/Profile";
-
+import IndividualCourses from "./components/IndividualCourses.jsx";
 
 function App() {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
+            setLoading(false);
         });
 
         return () => unsubscribe();
     }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <Router>
@@ -33,6 +39,7 @@ function App() {
                 <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate replace to="/login" />} />
                 <Route path="/notifications" element={user ? <Notifications /> : <Navigate replace to="/login" />} />
                 <Route path="/profile" element={user ? <Profile /> : <Navigate replace to="/login" />} />
+                <Route path="/course/:id" element={user ? <IndividualCourses /> : <Navigate replace to="/login" />} />
             </Routes>
         </Router>
     );
