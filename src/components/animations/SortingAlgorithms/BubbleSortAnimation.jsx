@@ -1,8 +1,8 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import '../animations/BubbleSortAnimation.css';
+import './BubbleSortAnimation.css';
 
-
+// Bubble Sort algoritmus lépésekkel
 const bubbleSort = (array) => {
     const arr = [...array];
     const steps = [];
@@ -12,10 +12,9 @@ const bubbleSort = (array) => {
         swapped = false;
         for (let i = 0; i < arr.length - 1; i++) {
             if (arr[i] > arr[i + 1]) {
-                // Swap elements
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]]; // Csere
                 swapped = true;
-                steps.push([...arr, { index: i + 1 }]);
+                steps.push([...arr, { index: i + 1 }]); // Lépés hozzáadása
             }
         }
     } while (swapped);
@@ -23,47 +22,48 @@ const bubbleSort = (array) => {
     return steps;
 };
 
-const BubbleSortAnimation = ({ array }) => {
-    const [currentArray, setCurrentArray] = useState(array);
+const BubbleSortAnimation = () => {
+    const [currentArray, setCurrentArray] = useState([5, 3, 8, 4, 2]); // Kezdő tömb
     const [isSorting, setIsSorting] = useState(false);
     const [steps, setSteps] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
 
     const startSorting = () => {
         setIsSorting(true);
-        const newSteps = bubbleSort(currentArray);
-        setSteps(newSteps);
-        setCurrentStep(0);
+        const newSteps = bubbleSort(currentArray); // Bubble sort lépések generálása
+        setSteps(newSteps); // Lépések mentése
+        setCurrentStep(0);  // Indítsa újra a lépések számát
     };
 
     useEffect(() => {
         if (!isSorting || currentStep >= steps.length) return;
 
-        // Animate the current step
+        // Jelenlegi lépés animálása
         const step = steps[currentStep];
-        setCurrentArray(step.filter((_, i) => i < step.length - 1));
-        highlightElement(step[step.length - 1].index);
+        setCurrentArray(step.filter((_, i) => i < step.length - 1)); // Frissítse a tömböt
+        highlightElement(step[step.length - 1]?.index); // Kiemelés
 
         const timeout = setTimeout(() => {
-            setCurrentStep(currentStep + 1);
-        }, 2500); // Timing between steps
+            setCurrentStep(currentStep + 1); // Következő lépés
+        }, 2500); // Időzítés
 
-        return () => clearTimeout(timeout);
+        return () => clearTimeout(timeout); // Tisztítás
     }, [isSorting, currentStep, steps]);
 
+    // Kiemeled az aktuális indexű elemet
     const highlightElement = (index) => {
         const elements = document.querySelectorAll('.array-element');
         elements.forEach((element, i) => {
             if (i === index) {
                 gsap.to(element, {
-                    scale: 1.2,
+                    scale: 1.2, // Nagyítás
                     duration: 0.5,
-                    backgroundColor: '#d1ce0f',
+                    backgroundColor: '#d1ce0f', // Kiemelés színe
                 });
             } else {
                 gsap.to(element, {
-                    scale: 1,
-                    backgroundColor: '#6200ea',
+                    scale: 1, // Alap méret
+                    backgroundColor: '#6200ea', // Alap szín
                     duration: 0.5,
                 });
             }
@@ -82,7 +82,18 @@ const BubbleSortAnimation = ({ array }) => {
                     </div>
                 ))}
             </div>
-            <button onClick={startSorting} style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }}>
+            <button
+                onClick={startSorting}
+                style={{
+                    marginTop: '20px',
+                    padding: '10px 20px',
+                    fontSize: '16px',
+                    backgroundColor: '#6200ea',
+                    color: '#fff',
+                    border: 'none',
+                    cursor: 'pointer',
+                }}
+            >
                 Start Sorting
             </button>
         </div>

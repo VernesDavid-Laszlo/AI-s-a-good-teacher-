@@ -1,0 +1,72 @@
+[
+  {
+    "id": "bubbleSort",
+    "chapterName": "Bubble Sort",
+    "lessons": [
+      { "title": "Introduction to Bubble Sort", "content": "What is Bubble Sort?" },
+      { "title": "Implementation", "content": "How to implement Bubble Sort?" }
+    ],
+    "animations": [
+      { "title": "Bubble Sort Animation", "component": "BubbleSortAnimation" }
+    ],
+    "tests": [
+      { "title": "Bubble Sort Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "mergeSort",
+    "chapterName": "Merge Sort",
+    "lessons": [
+      { "title": "Introduction to Merge Sort", "content": "What is Merge Sort?" },
+      { "title": "Implementation", "content": "How to implement Merge Sort?" }
+    ],
+    "animations": [
+      { "title": "Merge Sort Animation", "component": "MergeSortAnimation" }
+    ],
+    "tests": [
+      { "title": "Merge Sort Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "quickSort",
+    "chapterName": "Quick Sort",
+    "lessons": [
+      { "title": "Introduction to Quick Sort", "content": "What is Quick Sort?" },
+      { "title": "Implementation", "content": "How to implement Quick Sort?" }
+    ],
+    "animations": [
+      { "title": "Quick Sort Animation", "component": "QuickSortAnimation" }
+    ],
+    "tests": [
+      { "title": "Quick Sort Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "insertionSort",
+    "chapterName": "Insertion Sort",
+    "lessons": [
+      { "title": "Introduction to Insertion Sort", "content": "What is Insertion Sort?" },
+      { "title": "Implementation", "content": "How to implement Insertion Sort?" }
+    ],
+    "animations": [
+      { "title": "Insertion Sort Animation", "component": "InsertionSortAnimation" }
+    ],
+    "tests": [
+      { "title": "Insertion Sort Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "selectionSort",
+    "chapterName": "Selection Sort",
+    "lessons": [
+      { "title": "Introduction to Selection Sort", "content": "What is Selection Sort?" },
+      { "title": "Implementation", "content": "How to implement Selection Sort?" }
+    ],
+    "animations": [
+      { "title": "Selection Sort Animation", "component": "SelectionSortAnimation" }
+    ],
+    "tests": [
+      { "title": "Selection Sort Quiz", "questions": [] }
+    ]
+  }
+]

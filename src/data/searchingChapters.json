@@ -1,0 +1,72 @@
+[
+  {
+    "id": "linearSearch",
+    "chapterName": "Linear Search",
+    "lessons": [
+      { "title": "Introduction to Linear Search", "content": "What is Linear Search?" },
+      { "title": "Implementation", "content": "How to implement Linear Search?" }
+    ],
+    "animations": [
+      { "title": "Linear Search Animation", "component": "LinearSearchAnimation" }
+    ],
+    "tests": [
+      { "title": "Linear Search Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "binarySearch",
+    "chapterName": "Binary Search",
+    "lessons": [
+      { "title": "Introduction to Binary Search", "content": "What is Binary Search?" },
+      { "title": "Implementation", "content": "How to implement Binary Search?" }
+    ],
+    "animations": [
+      { "title": "Binary Search Animation", "component": "BinarySearchAnimation" }
+    ],
+    "tests": [
+      { "title": "Binary Search Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "binarySearchTree",
+    "chapterName": "Binary Search Tree",
+    "lessons": [
+      { "title": "Introduction to Binary Search Tree", "content": "What is Binary Search Tree?" },
+      { "title": "Implementation", "content": "How to implement Binary Search Tree?" }
+    ],
+    "animations": [
+      { "title": "Binary Search Tree Animation", "component": "BinarySearchTreeAnimation" }
+    ],
+    "tests": [
+      { "title": "Binary Search Tree Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "intervalSearch",
+    "chapterName": "Interval Search",
+    "lessons": [
+      { "title": "Introduction to Interval Search", "content": "What is Interval Search?" },
+      { "title": "Implementation", "content": "How to implement Interval Search?" }
+    ],
+    "animations": [
+      { "title": "Exponential Search Animation", "component": "IntervalSearchAnimation" }
+    ],
+    "tests": [
+      { "title": "Interval Search Quiz", "questions": [] }
+    ]
+  },
+  {
+    "id": "fibonacciSearch",
+    "chapterName": "Fibonacci Search",
+    "lessons": [
+      { "title": "Introduction to Fibonacci Search", "content": "What is Fibonacci Search?" },
+      { "title": "Implementation", "content": "How to implement Fibonacci Search?" }
+    ],
+    "animations": [
+      { "title": "Fibonacci Search Animation", "component": "FibonacciSearchAnimation" }
+    ],
+    "tests": [
+      { "title": "Fibonacci Search Quiz", "questions": [] }
+    ]
+  }
+]

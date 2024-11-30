@@ -18,6 +18,13 @@
     box-sizing: border-box;
 }
 
+.courses-container {
+    width: 100%;
+    max-width: 1200px; /* Maximális szélesség a nagyobb képernyők esetén */
+    margin: 0 auto;
+    padding: 20px;
+}
+
 .courses-container h1 {
     margin-bottom: 50px;
     text-align: center;
@@ -25,17 +32,73 @@
 
 .custom-container {
     padding: 20px;
-    max-width: calc(100% + 200px);
+    width: 100%; /* 100%-os szélesség */
+    max-width: 900px; /* Maximális szélesség */
     margin: 0 auto;
     background-color: #ffffff;
     border-radius: 7px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.section-container {
+    margin: 20px 0;
+    width: 100%;
+}
+
+.section-header {
+    background-color: #6200ea;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.section-header:hover {
+    background-color: #3700b3;
+}
+
+.section-content {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.lessons h4, .animations h4, .tests h4 {
+    margin: 10px 0;
+    color: #3f51b5;
+}
 
 @media (max-width: 768px) {
+    .courses-container {
+        width: 100%;
+        padding: 15px;
+    }
+
     .custom-container {
-        max-width: 90%;
-        margin: 0 5%;
+        max-width: 100%; /* A dobozok maximális szélessége 100% legyen kisebb képernyőn */
+        margin: 0 10px; /* Margin kisebb képernyőkön */
+    }
+
+    .section-header {
+        font-size: 16px; /* Kisebb betűméret a szekció címekhez */
+    }
+}
+
+@media (max-width: 480px) {
+    .courses-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .custom-container {
+        max-width: 100%; /* Teljes szélességre van állítva a kis képernyők esetén */
+    }
+
+    .section-header {
+        font-size: 14px; /* Még kisebb betűméret nagyon kis képernyőkön */
     }
 }

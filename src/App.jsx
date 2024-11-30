@@ -10,6 +10,7 @@ import Dashboard from "./components/Dashboard";
 import Notifications from "./components/Notifications";
 import Profile from "./components/Profile";
 import IndividualCourses from "./components/IndividualCourses.jsx";
+import UploadPage from "./components/UploadePage.jsx";
 
 function App() {
     const [user, setUser] = useState(null);
@@ -40,6 +41,8 @@ function App() {
                 <Route path="/notifications" element={user ? <Notifications /> : <Navigate replace to="/login" />} />
                 <Route path="/profile" element={user ? <Profile /> : <Navigate replace to="/login" />} />
                 <Route path="/course/:id" element={user ? <IndividualCourses /> : <Navigate replace to="/login" />} />
+                <Route path="/upload" element={<UploadPage />} />
+
             </Routes>
         </Router>
     );

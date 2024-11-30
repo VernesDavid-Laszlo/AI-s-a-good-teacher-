@@ -7,16 +7,22 @@ import '../styles/Courses.css';
 
 function Courses() {
     const [courses, setCourses] = useState([]);
-    const totalBoxes = 4;
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCourses = async () => {
             try {
+                // A 'courses' collection lekérése a Firebase-ból
                 const coursesCollection = collection(db, 'courses');
                 const courseSnapshot = await getDocs(coursesCollection);
-                const courseList = courseSnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().coursename }));
-                console.log("Fetched course names:", courseList);
+
+                // Az összes kurzus adatainak lekérése és a lista frissítése
+                const courseList = courseSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data()?.coursename || 'Unnamed Course', // Biztonságos ellenőrzés
+                }));
+
+                // A kurzusok frissítése az állapotban
                 setCourses(courseList);
             } catch (error) {
                 console.error("Error fetching courses:", error);
@@ -24,10 +30,10 @@ function Courses() {
         };
 
         fetchCourses();
-    }, []);
+    }, []); // A hook csak egyszer fut le, amikor az oldal betöltődik
 
     const handleClick = (id) => {
-        navigate(`/course/${id}`);
+        navigate(`/course/${id}`); // Navigálás a kiválasztott kurzus oldalára
     };
 
     return (
@@ -36,16 +42,20 @@ function Courses() {
                 <Header />
                 <main className="courses-container container">
                     <div className="course-box-container">
-                        {Array.from({ length: totalBoxes }).map((_, index) => (
-                            <div className="col" key={index}>
-                                <div
-                                    className="course-box"
-                                    onClick={() => courses[index] && handleClick(courses[index].id)}
-                                >
-                                    <h3>{courses[index]?.name || ""}</h3>
+                        {courses.length > 0 ? (
+                            courses.map((course) => (
+                                <div className="col" key={course.id}>
+                                    <div
+                                        className="course-box"
+                                        onClick={() => handleClick(course.id)}
+                                    >
+                                        <h3>{course.name}</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p>Loading courses...</p> // Ha nincsenek kurzusok, akkor ez jelenik meg
+                        )}
                     </div>
                 </main>
             </div>

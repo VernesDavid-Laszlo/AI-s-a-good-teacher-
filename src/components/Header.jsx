@@ -57,32 +57,39 @@ function Header() {
                     <div className="collapse navbar-collapse justify-content-center">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/home" style={{ color: 'white' }}>
-                                    <FontAwesomeIcon icon={faHome} className="me-2" />
+                                <Link className="nav-link" to="/home" style={{color: 'white'}}>
+                                    <FontAwesomeIcon icon={faHome} className="me-2"/>
                                     Home
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/courses" style={{ color: 'white' }}>
-                                    <FontAwesomeIcon icon={faBook} className="me-2" />
+                                <Link className="nav-link" to="/courses" style={{color: 'white'}}>
+                                    <FontAwesomeIcon icon={faBook} className="me-2"/>
                                     Courses
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/dashboard" style={{ color: 'white' }}>
-                                    <FontAwesomeIcon icon={faTachometerAlt} className="me-2" />
+                                <Link className="nav-link" to="/dashboard" style={{color: 'white'}}>
+                                    <FontAwesomeIcon icon={faTachometerAlt} className="me-2"/>
                                     Dashboard
                                 </Link>
                             </li>
                             <li className="nav-item dropdown">
-                                <Link className="nav-link" to="/notifications" style={{ color: 'white' }}>
-                                    <FontAwesomeIcon icon={faBell} className="me-2" />
+                                <Link className="nav-link" to="/notifications" style={{color: 'white'}}>
+                                    <FontAwesomeIcon icon={faBell} className="me-2"/>
                                     Notifications
+                                </Link>
+                            </li>
+                            <li className="nav-item dropdown">
+                                <Link className="nav-link" to="/upload" style={{color: 'white'}}>
+                                    <FontAwesomeIcon icon={faBell} className="me-2"/>
+                                    UploadPage
                                 </Link>
                             </li>
                         </ul>
                     </div>
-                    <div className="d-flex align-items-center ms-5 profile-username-container" style={{ marginRight: '70px' }}>
+                    <div className="d-flex align-items-center ms-5 profile-username-container"
+                         style={{marginRight: '70px'}}>
                         <div className="dropdown">
                             <a
                                 className="d-flex align-items-center text-white text-decoration-none"
