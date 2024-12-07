@@ -20,7 +20,7 @@
 
 .courses-container {
     width: 100%;
-    max-width: 1200px; /* Maximális szélesség a nagyobb képernyők esetén */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -32,8 +32,8 @@
 
 .custom-container {
     padding: 20px;
-    width: 100%; /* 100%-os szélesség */
-    max-width: 900px; /* Maximális szélesség */
+    width: 100%;
+    max-width: 900px;
     margin: 0 auto;
     background-color: #ffffff;
     border-radius: 7px;
@@ -79,12 +79,12 @@
     }
 
     .custom-container {
-        max-width: 100%; /* A dobozok maximális szélessége 100% legyen kisebb képernyőn */
-        margin: 0 10px; /* Margin kisebb képernyőkön */
+        max-width: 100%;
+        margin: 0 10px;
     }
 
     .section-header {
-        font-size: 16px; /* Kisebb betűméret a szekció címekhez */
+        font-size: 16px;
     }
 }
 
@@ -95,10 +95,110 @@
     }
 
     .custom-container {
-        max-width: 100%; /* Teljes szélességre van állítva a kis képernyők esetén */
+        max-width: 100%;
     }
 
     .section-header {
-        font-size: 14px; /* Még kisebb betűméret nagyon kis képernyőkön */
+        font-size: 14px;
     }
 }
+
+
+.presentation-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    width: 85%;
+    height: 97%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+
+}
+
+.presentation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.open-presentation-button {
+    background-color: #3700b3;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.open-presentation-button:hover {
+    background-color: #0056b3;
+}
+
+.close-button {
+    background-color: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 15px;
+    position: absolute;
+    top:0px;
+    right: 0px;
+    margin: 0;
+}
+
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+}
+
+
+.code-editor-container {
+    margin-top: 20px;
+}
+
+.code-mirror {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #1e1e1e;
+}
+
+.output {
+    margin-top: 20px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.output pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.code-container {
+    background-color: #313030;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+
+

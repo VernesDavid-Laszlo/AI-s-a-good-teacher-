@@ -3,7 +3,9 @@ import { db } from '../firebase-config';
 import { doc, collection, getDoc, getDocs } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
-import '../styles/IndividualCourses.css'
+import Modal from 'react-modal';
+import 'prismjs/themes/prism-tomorrow.css';
+import '../styles/IndividualCourses.css';
 
 const animationComponents = {
     BubbleSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/BubbleSortAnimation.jsx')),
@@ -14,15 +16,19 @@ const animationComponents = {
 };
 
 const IndividualCourses = () => {
-    const { id } = useParams(); // Ez az aktuális kurzus ID-ja az URL-ből
+    const { id } = useParams(); // Az aktuális kurzus ID-ja az URL-ből
     const [courseName, setCourseName] = useState('');
     const [chapters, setChapters] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [expandedSections, setExpandedSections] = useState({
-        lessons: false,
-        animations: false,
-        tests: false,
-    });
+    const [expandedSections, setExpandedSections] = useState({}); // Egyedi állapot minden fejezethez
+
+    // Modal állapotok
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentPdfUrl, setCurrentPdfUrl] = useState(''); // A PDF URL
+
+    useEffect(() => {
+        Modal.setAppElement('#root'); // Accessibility fix for React Modal
+    }, []);
 
     useEffect(() => {
         const fetchCourseData = async () => {
@@ -50,9 +56,17 @@ const IndividualCourses = () => {
                         lessons: doc.data().lessons || [],
                         animations: doc.data().animations || [],
                         tests: doc.data().tests || [],
+                        description: doc.data().description || '', // Leírás hozzáadása
                     }));
 
                     setChapters(fetchedChapters);
+
+                    // Kezdeti állapotok az expandedSections objektumhoz
+                    const initialExpandedSections = fetchedChapters.reduce((acc, chapter) => {
+                        acc[chapter.id] = { lessons: false, animations: false, tests: false };
+                        return acc;
+                    }, {});
+                    setExpandedSections(initialExpandedSections);
                 } else {
                     console.error('No chapters found in this course.');
                 }
@@ -66,10 +80,31 @@ const IndividualCourses = () => {
         fetchCourseData();
     }, [id]);
 
-    const toggleSection = (section) => {
+    useEffect(() => {
+        // Prism.js újrainicializálása, hogy a kód kiemelés működjön
+        import('prismjs').then((Prism) => Prism.highlightAll());
+    }, [chapters]);
+
+    // Modal megnyitása
+    const openPdfModal = (url) => {
+        setCurrentPdfUrl(url); // PDF URL beállítása
+        setIsModalOpen(true);
+    };
+
+    // Modal bezárása
+    const closePdfModal = () => {
+        setIsModalOpen(false);
+        setCurrentPdfUrl('');
+    };
+
+    // Section toggle
+    const toggleSection = (chapterId, section) => {
         setExpandedSections((prevState) => ({
             ...prevState,
-            [section]: !prevState[section],
+            [chapterId]: {
+                ...prevState[chapterId],
+                [section]: !prevState[chapterId][section],
+            },
         }));
     };
 
@@ -90,15 +125,36 @@ const IndividualCourses = () => {
 
                                 {/* Lessons Section */}
                                 <div className="section-container">
-                                    <div className="section-header" onClick={() => toggleSection('lessons')}>
+                                    <div
+                                        className="section-header"
+                                        onClick={() => toggleSection(chapter.id, 'lessons')}
+                                    >
                                         <h3>Lessons</h3>
                                     </div>
-                                    {expandedSections.lessons && (
+                                    {expandedSections[chapter.id]?.lessons && (
                                         <div className="section-content">
                                             {chapter.lessons.map((lesson, index) => (
-                                                <div key={index}>
+                                                <div key={index} className="lesson-container">
                                                     <h4>{lesson.title}</h4>
-                                                    <p>{lesson.content}</p>
+                                                    {lesson.content.includes('https://') && (
+                                                        <button
+                                                            onClick={() => openPdfModal(lesson.content)}
+                                                            className="open-presentation-button"
+                                                        >
+                                                            Open PDF
+                                                        </button>
+                                                    )}
+
+                                                    {/* Az "Implementation" szöveg alatt a kód megjelenítése */}
+                                                    {lesson.title === "Implementation" && lesson.content && (
+                                                        <div className="code-container">
+                                                            <pre className="line-numbers">
+                                                                <code className="language-cpp">
+                                                                    {lesson.content}
+                                                                </code>
+                                                            </pre>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
@@ -107,16 +163,24 @@ const IndividualCourses = () => {
 
                                 {/* Animations Section */}
                                 <div className="section-container">
-                                    <div className="section-header" onClick={() => toggleSection('animations')}>
+                                    <div
+                                        className="section-header"
+                                        onClick={() => toggleSection(chapter.id, 'animations')}
+                                    >
                                         <h3>Animations</h3>
                                     </div>
-                                    {expandedSections.animations && (
+                                    {expandedSections[chapter.id]?.animations && (
                                         <div className="section-content">
                                             {chapter.animations.map((animation, index) => {
                                                 const AnimationComponent = animationComponents[animation.component];
                                                 return (
                                                     <div key={index}>
                                                         <h4>{animation.title}</h4>
+                                                        {chapter.description && (
+                                                            <p className="animation-description">
+                                                                {chapter.description}
+                                                            </p>
+                                                        )}
                                                         <React.Suspense fallback={<div>Loading animation...</div>}>
                                                             {AnimationComponent ? <AnimationComponent /> : <p>Animation not found</p>}
                                                         </React.Suspense>
@@ -129,10 +193,13 @@ const IndividualCourses = () => {
 
                                 {/* Tests Section */}
                                 <div className="section-container">
-                                    <div className="section-header" onClick={() => toggleSection('tests')}>
+                                    <div
+                                        className="section-header"
+                                        onClick={() => toggleSection(chapter.id, 'tests')}
+                                    >
                                         <h3>Tests</h3>
                                     </div>
-                                    {expandedSections.tests && (
+                                    {expandedSections[chapter.id]?.tests && (
                                         <div className="section-content">
                                             {chapter.tests.map((test, index) => (
                                                 <div key={index}>
@@ -148,6 +215,24 @@ const IndividualCourses = () => {
                     ) : (
                         <p>No chapters available for this course.</p>
                     )}
+
+                    {/* Modal for PDF presentations */}
+                    <Modal
+                        isOpen={isModalOpen}
+                        onRequestClose={closePdfModal}
+                        contentLabel="PDF Modal"
+                        className="presentation-modal"
+                        overlayClassName="presentation-overlay"
+                    >
+                        <button onClick={closePdfModal} className="close-button">X</button>
+                        <iframe
+                            src={`https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(currentPdfUrl)}`}
+                            width="100%"
+                            height="500px"
+                            style={{ border: "none" }}
+                            title="PDF Viewer"
+                        ></iframe>
+                    </Modal>
                 </main>
             </div>
         </div>

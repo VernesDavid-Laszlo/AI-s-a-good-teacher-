@@ -1,0 +1,51 @@
+.array-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.array-element {
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    background-color: #6200ea;
+    color: white;
+    font-size: 20px;
+    border-radius: 5px;
+    transition: transform 0.5s, background-color 0.5s, top 0.5s;
+    position: relative;
+}
+
+.array-element.sorted {
+    background-color: #4caf50; /* Zöld szín */
+}
+
+.array-element.compare {
+    background-color: #ff9800; /* Narancssárga szín az összehasonlításra */
+}
+
+.array-element.pivot {
+    background-color: #d90b31;
+}
+
+.array-element.partition {
+    background-color: #03a9f4;
+}
+
+.array-element.key {
+    background-color: #ffeb3b;
+}
+
+.array-element.insert {
+    background-color: #03a9f4;
+}
+.array-element.merge {
+    background-color: #9c27b0; /* Lila a merge szakaszra */
+}
+
+.array-element.splitting {
+    background-color: #f44336; /* Piros szín az elválasztásnál */
+}

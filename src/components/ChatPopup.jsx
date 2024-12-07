@@ -44,7 +44,7 @@ const ChatPopup = ({ isOpen, onClose }) => {
         <div className="chat-style">
             <div className="headerC">
                 <h3>Ask the AI</h3>
-                <button className="close-button" onClick={onClose}>&times;</button>
+                <button className="close-buttonc" onClick={onClose}>&times;</button>
             </div>
             <div className="bodyC">
                 {messages.map((message, index) => (

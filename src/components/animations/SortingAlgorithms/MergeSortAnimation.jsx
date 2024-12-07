@@ -1,108 +1,160 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './BubbleSortAnimation.css';
+import './SortAnimations.css';
 
-// Bubble Sort algoritmus lépésekkel
-const bubbleSort = (array) => {
-    const arr = [...array];
+// Merge Sort lépéseit generáló algoritmus
+const mergeSortSteps = (array) => {
     const steps = [];
-    let swapped;
+    const mergeSortHelper = (arr, start, end) => {
+        if (start >= end) return;
+        const mid = Math.floor((start + end) / 2);
 
-    do {
-        swapped = false;
-        for (let i = 0; i < arr.length - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]]; // Csere
-                swapped = true;
-                steps.push([...arr, { index: i + 1 }]); // Lépés hozzáadása
+        mergeSortHelper(arr, start, mid);
+        mergeSortHelper(arr, mid + 1, end);
+
+        // A két rész egyesítése
+        merge(arr, start, mid, end);
+    };
+
+    const merge = (arr, start, mid, end) => {
+        const left = arr.slice(start, mid + 1);
+        const right = arr.slice(mid + 1, end + 1);
+        let leftIdx = 0, rightIdx = 0, mergedIdx = start;
+
+        steps.push({ type: 'split', left, right, start, end }); // Az osztás vizualizálása
+
+        while (leftIdx < left.length && rightIdx < right.length) {
+            if (left[leftIdx] <= right[rightIdx]) {
+                arr[mergedIdx++] = left[leftIdx++];
+            } else {
+                arr[mergedIdx++] = right[rightIdx++];
             }
         }
-    } while (swapped);
 
+        // Ha maradtak elemek
+        while (leftIdx < left.length) arr[mergedIdx++] = left[leftIdx++];
+        while (rightIdx < right.length) arr[mergedIdx++] = right[rightIdx++];
+
+        steps.push({ type: 'merge', array: [...arr], start, end });
+    };
+
+    mergeSortHelper(array, 0, array.length - 1);
     return steps;
 };
 
-const BubbleSortAnimation = () => {
-    const [inputArray, setInputArray] = useState(""); // Kezdeti üres input mező
-    const [currentArray, setCurrentArray] = useState([5, 3, 8, 4, 2]); // Kezdő tömb
-    const [isSorting, setIsSorting] = useState(false);
+const MergeSortAnimation = () => {
+    const [arrayInput, setArrayInput] = useState('3, 2, 5, 9, 1, 8, 4');
+    const [currentArray, setCurrentArray] = useState([3, 2, 5, 9, 1, 8, 4]);
     const [steps, setSteps] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
+    const [isSorting, setIsSorting] = useState(false);
 
-    // A tömb formázása és beállítása
-    const handleInputChange = (e) => {
-        const value = e.target.value;
-        setInputArray(value);
+    const handleArrayChange = () => {
+        try {
+            const parsedArray = arrayInput
+                .split(',')
+                .map((num) => parseInt(num.trim(), 10))
+                .filter((num) => !isNaN(num));
+            setCurrentArray(parsedArray);
+            setSteps([]);
+            setCurrentStep(0);
+            setIsSorting(false);
+        } catch {
+            alert('Invalid input. Please provide a comma-separated list of numbers.');
+        }
     };
 
-    // A rendezés indítása
     const startSorting = () => {
-        const array = inputArray.split(",").map(item => parseInt(item.trim())).filter(num => !isNaN(num));
-        if (array.length === 0) {
-            alert("Please enter a valid array.");
+        if (currentArray.length === 0) {
+            alert('Array is empty.');
             return;
         }
-        setCurrentArray(array); // Frissítjük a tömböt
-        setIsSorting(true); // Rendezés indítása
-        const newSteps = bubbleSort(array); // Bubble sort lépések generálása
-        setSteps(newSteps); // Lépések mentése
-        setCurrentStep(0);  // Indítsa újra a lépések számát
+        setSteps(mergeSortSteps(currentArray));
+        setIsSorting(true);
+        setCurrentStep(0);
     };
 
     useEffect(() => {
         if (!isSorting || currentStep >= steps.length) return;
 
-        // Jelenlegi lépés animálása
         const step = steps[currentStep];
-        setCurrentArray(step.filter((_, i) => i < step.length - 1)); // Frissítse a tömböt
-        highlightElement(step[step.length - 1]?.index); // Kiemelés
+        if (step.type === 'split') {
+            highlightSplit(step.left, step.right, step.start, step.end);
+        } else if (step.type === 'merge') {
+            mergeElements(step.array, step.start, step.end);
+        }
 
         const timeout = setTimeout(() => {
-            setCurrentStep(currentStep + 1); // Következő lépés
-        }, 2500); // Időzítés
+            setCurrentStep((prev) => prev + 1);
+        }, 1000); // Minden lépés 1 másodpercig tart
 
-        return () => clearTimeout(timeout); // Tisztítás
+        return () => clearTimeout(timeout);
     }, [isSorting, currentStep, steps]);
 
-    // Kiemeled az aktuális indexű elemet
-    const highlightElement = (index) => {
+    const highlightSplit = (left, right, start, end) => {
         const elements = document.querySelectorAll('.array-element');
-        elements.forEach((element, i) => {
-            if (i === index) {
-                gsap.to(element, {
-                    scale: 1.2, // Nagyítás
-                    duration: 0.5,
-                    backgroundColor: '#d1ce0f', // Kiemelés színe
-                });
-            } else {
-                gsap.to(element, {
-                    scale: 1, // Alap méret
-                    backgroundColor: '#6200ea', // Alap szín
-                    duration: 0.5,
-                });
+
+        // Kiemeljük a szétválasztott tömböket és közéjük helyet adunk
+        elements.forEach((el, idx) => {
+            if (idx >= start && idx <= end) {
+                if (left.includes(el.innerText)) {
+                    gsap.to(el, { backgroundColor: '#ffeb3b', marginRight: '20px', duration: 0.7 }); // Távolság hozzáadása
+                } else if (right.includes(el.innerText)) {
+                    gsap.to(el, { backgroundColor: '#03a9f4', marginRight: '20px', duration: 0.7 });
+                }
             }
         });
+
+        // Elemek szétválasztása vizuálisan is
+        gsap.to('.array-container', { paddingLeft: '30px', duration: 0.7 });
+    };
+
+    const mergeElements = (newArray, start, end) => {
+        const elements = document.querySelectorAll('.array-element');
+
+        // Animáljuk az elemeket a rendezés közben
+        for (let i = start; i <= end; i++) {
+            const element = elements[i];
+            gsap.to(element, { y: -50, duration: 0.5 });
+        }
+
+        setTimeout(() => {
+            setCurrentArray(newArray);
+            for (let i = start; i <= end; i++) {
+                const element = elements[i];
+                gsap.to(element, { y: 0, duration: 0.5 });
+            }
+
+            // Ha egy elem a végső helyére került, azonnal zöldre vált
+            const finalSortedElement = elements[end];
+            gsap.to(finalSortedElement, { backgroundColor: '#4caf50', duration: 0.7 });
+        }, 500);
     };
 
     return (
         <div>
-            <div>
-                <label htmlFor="array-input">Enter an array (comma separated): </label>
+            <div style={{ marginBottom: '20px' }}>
                 <input
-                    id="array-input"
                     type="text"
-                    value={inputArray}
-                    onChange={handleInputChange}
-                    placeholder="e.g. 5, 3, 8, 4, 2"
-                    style={{
-                        padding: '10px',
-                        fontSize: '16px',
-                        margin: '10px 0',
-                        width: '300px',
-                        borderRadius: '4px',
-                        border: '1px solid #ccc',
-                    }}
+                    value={arrayInput}
+                    onChange={(e) => setArrayInput(e.target.value)}
+                    placeholder="Enter comma-separated numbers"
+                    style={{ padding: '10px', width: '300px', fontSize: '16px' }}
                 />
+                <button
+                    onClick={handleArrayChange}
+                    style={{
+                        marginLeft: '10px',
+                        padding: '10px 20px',
+                        fontSize: '16px',
+                        backgroundColor: '#6200ea',
+                        color: '#fff',
+                        border: 'none',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Set Array
+                </button>
             </div>
             <div className="array-container">
                 {currentArray.map((value, index) => (
@@ -129,4 +181,4 @@ const BubbleSortAnimation = () => {
     );
 };
 
-export default BubbleSortAnimation;
+export default MergeSortAnimation;
