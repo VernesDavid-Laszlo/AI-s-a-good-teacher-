@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { db } from '../firebase-config';
 import { doc, collection, getDoc, getDocs } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
@@ -12,92 +12,112 @@ const animationComponents = {
     MergeSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/MergeSortAnimation.jsx')),
     QuickSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/QuickSortAnimation.jsx')),
     InsertionSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/InsertionSortAnimation.jsx')),
-    SelectionSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/SelectionSortAnimation.jsx'))
+    SelectionSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/SelectionSortAnimation.jsx')),
+    BinarySearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/BinarySearchAnimation.jsx')),
+    BinarySearchTreeAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/BinarySearchTreeAnimation.jsx')),
+    LinearSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/LinearSearchAnimation.jsx')),
+    FibonacciSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/FibonacciSearchAnimation.jsx')),
+    IntervalSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/IntervalSearchAnimation.jsx'))
 };
 
 const IndividualCourses = () => {
-    const { id } = useParams(); // Az aktuális kurzus ID-ja az URL-ből
+    const { id } = useParams();
     const [courseName, setCourseName] = useState('');
     const [chapters, setChapters] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [expandedSections, setExpandedSections] = useState({}); // Egyedi állapot minden fejezethez
-
-    // Modal állapotok
+    const [expandedSections, setExpandedSections] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentPdfUrl, setCurrentPdfUrl] = useState(''); // A PDF URL
+    const [currentPdfUrl, setCurrentPdfUrl] = useState('');
+    const [pdfLoading, setPdfLoading] = useState(false);
 
     useEffect(() => {
-        Modal.setAppElement('#root'); // Accessibility fix for React Modal
+        Modal.setAppElement('#root');
     }, []);
 
-    useEffect(() => {
-        const fetchCourseData = async () => {
-            try {
-                // Kurzus adatainak lekérdezése
-                const courseRef = doc(db, 'courses', id);
-                const courseSnapshot = await getDoc(courseRef);
+    const fetchCourseData = useCallback(async () => {
+        try {
+            const courseRef = doc(db, 'courses', id);
+            const courseSnapshot = await getDoc(courseRef);
 
-                if (courseSnapshot.exists()) {
-                    setCourseName(courseSnapshot.data().coursename || 'Unnamed Course');
-                } else {
-                    console.error(`No course found with ID: ${id}`);
-                    setLoading(false);
-                    return;
-                }
-
-                // Chapters gyűjtemény lekérdezése
-                const chaptersRef = collection(courseRef, 'chapters');
-                const chaptersSnapshot = await getDocs(chaptersRef);
-
-                if (!chaptersSnapshot.empty) {
-                    const fetchedChapters = chaptersSnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        chapterName: doc.data().chapterName || 'Untitled Chapter',
-                        lessons: doc.data().lessons || [],
-                        animations: doc.data().animations || [],
-                        tests: doc.data().tests || [],
-                        description: doc.data().description || '', // Leírás hozzáadása
-                    }));
-
-                    setChapters(fetchedChapters);
-
-                    // Kezdeti állapotok az expandedSections objektumhoz
-                    const initialExpandedSections = fetchedChapters.reduce((acc, chapter) => {
-                        acc[chapter.id] = { lessons: false, animations: false, tests: false };
-                        return acc;
-                    }, {});
-                    setExpandedSections(initialExpandedSections);
-                } else {
-                    console.error('No chapters found in this course.');
-                }
-            } catch (error) {
-                console.error('Error fetching course data:', error);
-            } finally {
+            if (courseSnapshot.exists()) {
+                setCourseName(courseSnapshot.data().coursename || 'Unnamed Course');
+            } else {
+                console.error(`No course found with ID: ${id}`);
                 setLoading(false);
+                return;
             }
-        };
 
-        fetchCourseData();
+            const chaptersRef = collection(courseRef, 'chapters');
+            const chaptersSnapshot = await getDocs(chaptersRef);
+
+            if (!chaptersSnapshot.empty) {
+                const fetchedChapters = chaptersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    chapterName: doc.data().chapterName || 'Untitled Chapter',
+                    lessons: doc.data().lessons || [],
+                    animations: doc.data().animations || [],
+                    tests: doc.data().tests || [],
+                    description: doc.data().description || '',
+                }));
+
+                setChapters(fetchedChapters);
+
+                const initialExpandedSections = fetchedChapters.reduce((acc, chapter) => {
+                    acc[chapter.id] = { lessons: false, animations: false, tests: false };
+                    return acc;
+                }, {});
+                setExpandedSections(initialExpandedSections);
+            } else {
+                console.error('No chapters found in this course.');
+            }
+        } catch (error) {
+            console.error('Error fetching course data:', error);
+        } finally {
+            setLoading(false);
+        }
     }, [id]);
 
     useEffect(() => {
-        // Prism.js újrainicializálása, hogy a kód kiemelés működjön
+        fetchCourseData();
+    }, [fetchCourseData]);
+
+    useEffect(() => {
         import('prismjs').then((Prism) => Prism.highlightAll());
     }, [chapters]);
 
-    // Modal megnyitása
+    // A PDF fájlok gyors letöltése (ha nem volt letöltve)
+    const downloadPdfIfNeeded = async (url) => {
+        // Ellenőrizzük, hogy a PDF már létezik-e a localStorage-ben
+        if (!localStorage.getItem(url)) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    // Tároljuk a fájlt a localStorage-ben
+                    localStorage.setItem(url, reader.result);
+                };
+                reader.readAsDataURL(blob);
+            } catch (error) {
+                console.error('Error downloading PDF:', error);
+            }
+        }
+    };
+
     const openPdfModal = (url) => {
-        setCurrentPdfUrl(url); // PDF URL beállítása
+        setPdfLoading(true);
+        // Letöltjük a PDF fájlt előre, ha szükséges
+        downloadPdfIfNeeded(url);
+        setCurrentPdfUrl(url);
         setIsModalOpen(true);
     };
 
-    // Modal bezárása
     const closePdfModal = () => {
         setIsModalOpen(false);
         setCurrentPdfUrl('');
+        setPdfLoading(false);
     };
 
-    // Section toggle
     const toggleSection = (chapterId, section) => {
         setExpandedSections((prevState) => ({
             ...prevState,
@@ -119,11 +139,9 @@ const IndividualCourses = () => {
                 <main className="courses-container">
                     <h1>{courseName}</h1>
                     {chapters.length > 0 ? (
-                        chapters.map(chapter => (
+                        chapters.map((chapter) => (
                             <div key={chapter.id}>
                                 <h2>{chapter.chapterName}</h2>
-
-                                {/* Lessons Section */}
                                 <div className="section-container">
                                     <div
                                         className="section-header"
@@ -144,8 +162,6 @@ const IndividualCourses = () => {
                                                             Open PDF
                                                         </button>
                                                     )}
-
-                                                    {/* Az "Implementation" szöveg alatt a kód megjelenítése */}
                                                     {lesson.title === "Implementation" && lesson.content && (
                                                         <div className="code-container">
                                                             <pre className="line-numbers">
@@ -161,7 +177,6 @@ const IndividualCourses = () => {
                                     )}
                                 </div>
 
-                                {/* Animations Section */}
                                 <div className="section-container">
                                     <div
                                         className="section-header"
@@ -191,7 +206,6 @@ const IndividualCourses = () => {
                                     )}
                                 </div>
 
-                                {/* Tests Section */}
                                 <div className="section-container">
                                     <div
                                         className="section-header"
@@ -216,7 +230,6 @@ const IndividualCourses = () => {
                         <p>No chapters available for this course.</p>
                     )}
 
-                    {/* Modal for PDF presentations */}
                     <Modal
                         isOpen={isModalOpen}
                         onRequestClose={closePdfModal}
@@ -225,12 +238,14 @@ const IndividualCourses = () => {
                         overlayClassName="presentation-overlay"
                     >
                         <button onClick={closePdfModal} className="close-button">X</button>
+                        {pdfLoading && <div>Loading PDF...</div>}
                         <iframe
                             src={`https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(currentPdfUrl)}`}
                             width="100%"
                             height="500px"
                             style={{ border: "none" }}
                             title="PDF Viewer"
+                            onLoad={() => setPdfLoading(false)}
                         ></iframe>
                     </Modal>
                 </main>

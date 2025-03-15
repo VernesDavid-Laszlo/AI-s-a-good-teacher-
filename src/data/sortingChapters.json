@@ -4,7 +4,7 @@
     "chapterName": "Bubble Sort",
     "lessons": [
       { "title": "Introduction to Bubble Sort", "content": "What is Bubble Sort?" },
-      { "title": "Implementation", "content": "How to implement Bubble Sort?" }
+      { "title": "Implementation", "content": "#include <iostream>\\n\\nint main() {\\n    std::cout << \\\"Hello, World!\\\";\\n    return 0;\\n}" }
     ],
     "animations": [
       { "title": "Bubble Sort Animation", "component": "BubbleSortAnimation" }

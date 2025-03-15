@@ -80,12 +80,6 @@ function Header() {
                                     Notifications
                                 </Link>
                             </li>
-                            <li className="nav-item dropdown">
-                                <Link className="nav-link" to="/upload" style={{color: 'white'}}>
-                                    <FontAwesomeIcon icon={faBell} className="me-2"/>
-                                    UploadPage
-                                </Link>
-                            </li>
                         </ul>
                     </div>
                     <div className="d-flex align-items-center ms-5 profile-username-container"
