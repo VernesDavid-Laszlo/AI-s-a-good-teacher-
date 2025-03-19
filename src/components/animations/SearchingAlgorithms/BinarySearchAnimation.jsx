@@ -2,8 +2,8 @@ import  { useState, useEffect } from "react";
 import { gsap } from "gsap";
 
 const BinarySearchAnimation = () => {
-    const [array, setArray] = useState([1, 3, 5, 7, 9, 11, 13, 15, 17]);
-    const [target, setTarget] = useState(7);
+    const [array, setArray] = useState([1, 5, 7, 9, 11, 13, 15, 17, 23, 45, 53, 59,98]);
+    const [target, setTarget] = useState(13);
     const [message, setMessage] = useState("Click 'Start' to begin");
 
     const binarySearch = async () => {
@@ -43,13 +43,16 @@ const BinarySearchAnimation = () => {
         <div style={{ textAlign: "center", padding: "20px" }}>
             <input
                 type="number"
-                value={target}
-                onChange={(e) => setTarget(Number(e.target.value))}
+                value={target || ""}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setTarget(value === "" ? "" : Number(value));
+                }}
                 placeholder="Enter number"
             />
             <button onClick={binarySearch}>Start</button>
             <p>{message}</p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+            <div style={{display: "flex", justifyContent: "center", gap: "10px"}}>
                 {array.map((num, index) => (
                     <div
                         key={index}

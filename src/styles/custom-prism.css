@@ -1,0 +1,57 @@
+/* Háttér és alap szövegszín */
+pre[class*="language-"] {
+    background: #282a36 !important;  /* Dracula háttér */
+    color: #f8f8f2 !important;       /* Világos szöveg */
+}
+
+/* Kiemelések */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #6272a4 !important;  /* Kékesszürke kommentek */
+}
+
+.token.punctuation {
+    color: #f8f8f2 !important;  /* Fehér írásjelek */
+}
+
+.token.keyword {
+    color: #ff79c6 !important;  /* Rózsaszín kulcsszavak */
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #ff5555 !important;  /* Piros property és törölt dolgok */
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #50fa7b !important;  /* Zöld attribútumok és stringek */
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable {
+    color: #f8f8f2 !important;  /* Fehér operátorok */
+}
+
+.token.function {
+    color: #ffb86c !important;  /* Narancssárga függvénynevek */
+}
+
+.token.number {
+    color: #bd93f9 !important;  /* Lila számok */
+}
+
+.token.boolean {
+    color: #ff79c6 !important;  /* Rózsaszín boolean */
+}

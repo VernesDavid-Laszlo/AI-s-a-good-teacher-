@@ -5,7 +5,9 @@ import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Modal from 'react-modal';
 import 'prismjs/themes/prism-tomorrow.css';
+import '../styles/custom-prism.css';
 import '../styles/IndividualCourses.css';
+import PdfPreview from "./PdfPreview.jsx";
 
 const animationComponents = {
     BubbleSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/BubbleSortAnimation.jsx')),
@@ -17,7 +19,12 @@ const animationComponents = {
     BinarySearchTreeAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/BinarySearchTreeAnimation.jsx')),
     LinearSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/LinearSearchAnimation.jsx')),
     FibonacciSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/FibonacciSearchAnimation.jsx')),
-    IntervalSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/IntervalSearchAnimation.jsx'))
+    IntervalSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/IntervalSearchAnimation.jsx')),
+    BinarySearchPractice: React.lazy(() => import('./animations/practice/BinarySearchPractice.jsx')),
+    BinarySearchTreePractice: React.lazy(() => import('./animations/practice/BinarySearchTreePractice.jsx')),
+    FibonacciSearchPractice: React.lazy(() => import('./animations/practice/FibonacciSearchPractice.jsx')),
+    IntervalSearchPractice: React.lazy(() => import('./animations/practice/IntervalSearchPractice.jsx')),
+    LinearSearchPractice: React.lazy(() => import('./animations/practice/LinearSearchPractice.jsx'))
 };
 
 const IndividualCourses = () => {
@@ -57,13 +64,14 @@ const IndividualCourses = () => {
                     lessons: doc.data().lessons || [],
                     animations: doc.data().animations || [],
                     tests: doc.data().tests || [],
+                    practices: doc.data().practices || [],
                     description: doc.data().description || '',
                 }));
 
                 setChapters(fetchedChapters);
 
                 const initialExpandedSections = fetchedChapters.reduce((acc, chapter) => {
-                    acc[chapter.id] = { lessons: false, animations: false, tests: false };
+                    acc[chapter.id] = { lessons: false, animations: false, practices : false , tests: false };
                     return acc;
                 }, {});
                 setExpandedSections(initialExpandedSections);
@@ -82,8 +90,16 @@ const IndividualCourses = () => {
     }, [fetchCourseData]);
 
     useEffect(() => {
-        import('prismjs').then((Prism) => Prism.highlightAll());
+        import('prismjs').then((Prism) => {
+            import('prismjs/components/prism-core');
+            import('prismjs/components/prism-clike');
+            import('prismjs/components/prism-cpp').then(() => {
+                Prism.highlightAll();
+            });
+        });
     }, [chapters]);
+
+
 
     // A PDF fájlok gyors letöltése (ha nem volt letöltve)
     const downloadPdfIfNeeded = async (url) => {
@@ -132,6 +148,8 @@ const IndividualCourses = () => {
         return <div>Loading course data...</div>;
     }
 
+
+
     return (
         <div className="indCourses-page">
             <div className="indCourses-background">
@@ -155,18 +173,17 @@ const IndividualCourses = () => {
                                                 <div key={index} className="lesson-container">
                                                     <h4>{lesson.title}</h4>
                                                     {lesson.content.includes('https://') && (
-                                                        <button
-                                                            onClick={() => openPdfModal(lesson.content)}
-                                                            className="open-presentation-button"
-                                                        >
-                                                            Open PDF
-                                                        </button>
+                                                        <PdfPreview
+                                                            pdfUrl={lesson.content}
+                                                            fileName={lesson.preztitle}
+                                                            openPdfModal={openPdfModal}
+                                                        />
                                                     )}
                                                     {lesson.title === "Implementation" && lesson.content && (
                                                         <div className="code-container">
                                                             <pre className="line-numbers">
                                                                 <code className="language-cpp">
-                                                                    {lesson.content}
+                                                                    {lesson.content.replace(/\\n/g, '\n').replace(/\\"/g, '"')}
                                                                 </code>
                                                             </pre>
                                                         </div>
@@ -205,12 +222,32 @@ const IndividualCourses = () => {
                                         </div>
                                     )}
                                 </div>
+                                <div className="section-container">
+                                    <div className="section-header" onClick={() => toggleSection(chapter.id, 'practices')}>
+                                        <h3>Practice</h3>
+                                    </div>
+                                    {expandedSections[chapter.id]?.practices && (
+                                        <div className="section-content">
+                                            {chapter.practices?.map((practice, index) => {
+                                                const PracticeComponent = animationComponents[practice.implement];
+                                                return (
+                                                    <div key={index}>
+                                                        <h4>{practice.title}</h4>
+                                                        <p>{practice.description}</p>
+                                                        {PracticeComponent && (
+                                                            <React.Suspense fallback={<div>Loading practice...</div>}>
+                                                                <PracticeComponent />
+                                                            </React.Suspense>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
 
                                 <div className="section-container">
-                                    <div
-                                        className="section-header"
-                                        onClick={() => toggleSection(chapter.id, 'tests')}
-                                    >
+                                    <div className="section-header" onClick={() => toggleSection(chapter.id, 'tests')}>
                                         <h3>Tests</h3>
                                     </div>
                                     {expandedSections[chapter.id]?.tests && (
@@ -218,7 +255,7 @@ const IndividualCourses = () => {
                                             {chapter.tests.map((test, index) => (
                                                 <div key={index}>
                                                     <h4>{test.title}</h4>
-                                                    <p>{test.questions.length} questions</p>
+                                                    <p>Test questions available.</p>
                                                 </div>
                                             ))}
                                         </div>

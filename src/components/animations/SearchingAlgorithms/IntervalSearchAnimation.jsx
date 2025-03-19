@@ -51,17 +51,21 @@ const IntervalSearchAnimation = () => {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
+        <div style={{textAlign: "center", padding: "20px"}}>
             <h2>Interval Search Animation</h2>
             <input
                 type="number"
-                value={target}
-                onChange={(e) => setTarget(Number(e.target.value))}
+                value={target || ""}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setTarget(value === "" ? "" : Number(value));
+                }}
+                placeholder="Enter number"
             />
             <button onClick={intervalSearch}>Start</button>
             <p>{message}</p>
-            <p style={{ fontStyle: "italic", color: "blue" }}>{explanation}</p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "20px" }}>
+            <p style={{fontStyle: "italic", color: "blue"}}>{explanation}</p>
+            <div style={{display: "flex", justifyContent: "center", gap: "10px", marginTop: "20px"}}>
                 {array.map((num, index) => (
                     <div
                         key={index}

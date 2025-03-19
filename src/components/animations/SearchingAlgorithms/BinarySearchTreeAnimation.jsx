@@ -67,12 +67,16 @@ const BSTAnimation = () => {
             <h2>Binary Search Tree Animation</h2>
             <input
                 type="number"
-                value={target}
-                onChange={(e) => setTarget(Number(e.target.value))}
+                value={target || ""}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setTarget(value === "" ? "" : Number(value));
+                }}
+                placeholder="Enter number"
             />
             <button onClick={() => searchBST(tree, "root")}>Start</button>
             <p>{message}</p>
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{display: "flex", justifyContent: "center"}}>
                 {renderTree(tree, "root")}
             </div>
         </div>

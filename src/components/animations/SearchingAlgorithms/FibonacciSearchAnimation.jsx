@@ -63,18 +63,21 @@ const FibonacciSearchAnimation = () => {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
+        <div style={{textAlign: "center", padding: "20px"}}>
             <h2>Fibonacci Search Animation</h2>
             <input
                 type="number"
-                value={target}
-                onChange={(e) => setTarget(Number(e.target.value))}
-                style={{ marginBottom: "10px" }}
+                value={target || ""}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    setTarget(value === "" ? "" : Number(value));
+                }}
+                placeholder="Enter number"
             />
-            <br />
-            <button onClick={fibonacciSearch} style={{ marginBottom: "10px" }}>Start</button>
+            <br/>
+            <button onClick={fibonacciSearch} style={{marginBottom: "10px"}}>Start</button>
             <p>{message}</p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+            <div style={{display: "flex", justifyContent: "center", gap: "10px"}}>
                 {array.map((num, index) => (
                     <div
                         key={index}
