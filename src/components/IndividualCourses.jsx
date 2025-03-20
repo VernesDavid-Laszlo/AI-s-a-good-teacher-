@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { db } from '../firebase-config';
+import { auth, db } from '../firebase-config';
 import { doc, collection, getDoc, getDocs } from 'firebase/firestore';
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Modal from 'react-modal';
@@ -8,6 +9,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 import '../styles/custom-prism.css';
 import '../styles/IndividualCourses.css';
 import PdfPreview from "./PdfPreview.jsx";
+import UploadLessons from "./UploadLessons.jsx";
 
 const animationComponents = {
     BubbleSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/BubbleSortAnimation.jsx')),
@@ -36,6 +38,23 @@ const IndividualCourses = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentPdfUrl, setCurrentPdfUrl] = useState('');
     const [pdfLoading, setPdfLoading] = useState(false);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+    const [user] = useAuthState(auth);
+    const [userRole, setUserRole] = useState(null);
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            if (user) {
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    setUserRole(userSnap.data().role);
+                }
+            }
+        };
+
+        fetchUserRole();
+    }, [user]);
 
     useEffect(() => {
         Modal.setAppElement('#root');
@@ -148,6 +167,14 @@ const IndividualCourses = () => {
         return <div>Loading course data...</div>;
     }
 
+    const openUploadLessonModal = () => {
+        setIsUploadModalOpen(true);
+    };
+
+    const closeUploadLessonModal = () => {
+        setIsUploadModalOpen(false);
+    };
+
 
 
     return (
@@ -171,7 +198,25 @@ const IndividualCourses = () => {
                                         <div className="section-content">
                                             {chapter.lessons.map((lesson, index) => (
                                                 <div key={index} className="lesson-container">
-                                                    <h4>{lesson.title}</h4>
+                                                    <div className="lesson-header">
+                                                        <h4 className="lesson-title">{lesson.title}</h4>
+                                                        {(userRole === 1 || userRole === 0) && lesson.title !== "Implementation" && (
+                                                            <svg
+                                                                className="upload-icon"
+                                                                onClick={openUploadLessonModal}
+                                                                width="24"
+                                                                height="24"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    d="M5 20h14a2 2 0 002-2v-4h-2v4H5v-4H3v4a2 2 0 002 2zm7-14.586l3.293 3.293 1.414-1.414L12 2.586 7.293 7.293l1.414 1.414L11 5.414V16h2V5.414z"
+                                                                    fill="currentColor"
+                                                                />
+                                                            </svg>
+                                                        )}
+                                                    </div>
                                                     {lesson.content.includes('https://') && (
                                                         <PdfPreview
                                                             pdfUrl={lesson.content}
@@ -203,7 +248,7 @@ const IndividualCourses = () => {
                                     </div>
                                     {expandedSections[chapter.id]?.animations && (
                                         <div className="section-content">
-                                            {chapter.animations.map((animation, index) => {
+                                        {chapter.animations.map((animation, index) => {
                                                 const AnimationComponent = animationComponents[animation.component];
                                                 return (
                                                     <div key={index}>
@@ -285,6 +330,17 @@ const IndividualCourses = () => {
                             onLoad={() => setPdfLoading(false)}
                         ></iframe>
                     </Modal>
+                    <Modal
+                        isOpen={isUploadModalOpen}
+                        onRequestClose={closeUploadLessonModal}
+                        contentLabel="Upload Lesson"
+                        className="upload-modal"
+                        overlayClassName="upload-overlay"
+                    >
+                        <button onClick={closeUploadLessonModal} className="close-button">✖</button>
+                        <UploadLessons />
+                    </Modal>
+
                 </main>
             </div>
         </div>
