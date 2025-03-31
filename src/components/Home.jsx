@@ -96,7 +96,6 @@ function Home() {
     return (
         <div className="home-page">
             <div className="help-icon" onClick={handleHelpIconClick}>
-                <p>Ask</p>
                 <i className="bi bi-question-circle-fill"></i>
             </div>
             <ChatPopup isOpen={isPopupOpen} onClose={handleClosePopup} />

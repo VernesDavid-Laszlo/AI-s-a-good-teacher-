@@ -319,7 +319,7 @@ const IndividualCourses = () => {
                         className="presentation-modal"
                         overlayClassName="presentation-overlay"
                     >
-                        <button onClick={closePdfModal} className="close-button">X</button>
+                        <button onClick={closePdfModal} className="close-button">✖</button>
                         {pdfLoading && <div>Loading PDF...</div>}
                         <iframe
                             src={`https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(currentPdfUrl)}`}

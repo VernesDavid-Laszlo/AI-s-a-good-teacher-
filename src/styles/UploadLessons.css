@@ -1,0 +1,85 @@
+.upload-container {
+    width: 1150px;
+    height: 670px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+
+}
+
+/* Cím és input mező egy sorban, balra igazítva */
+.title-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.upload-label {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.upload-input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    min-width: 300px;
+}
+
+/* Drag and Drop középre igazítva */
+.drag-drop-container {
+    width: 100%;
+    max-width: 600px;
+    height: 200px;
+    border: 2px dashed #666;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    background: #f9f9f9;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Formátum megjegyzés */
+.upload-note {
+    font-size: 22px;
+    color: red;
+    align-self: center;
+}
+
+/* Send gomb a jobb alsó sarokban */
+.upload-send-button {
+    position: fixed;
+    width:80px;
+    bottom: 20px;
+    right: 20px;
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.upload-send-button:hover {
+    background-color: #3700b3;
+}
+

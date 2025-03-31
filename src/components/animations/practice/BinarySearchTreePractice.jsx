@@ -6,26 +6,74 @@ const BstPractice = () => {
         value: 50,
         left: {
             value: 30,
-            left: { value: 20, left: { value: 10 }, right: { value: 25 } },
-            right: { value: 40, left: { value: 35 }, right: { value: 45 } }
+            left: {
+                value: 20,
+                left: {
+                    value: 10,
+                    left: { value: 5 },
+                    right: { value: 15 }
+                },
+                right: {
+                    value: 25,
+                    left: { value: 22 },
+                    right: { value: 27 }
+                }
+            },
+            right: {
+                value: 40,
+                left: {
+                    value: 35,
+                    left: { value: 32 },
+                    right: { value: 37 }
+                },
+                right: {
+                    value: 45,
+                    left: { value: 42 },
+                    right: { value: 48 }
+                }
+            }
         },
         right: {
             value: 70,
-            left: { value: 60, left: { value: 55 }, right: { value: 65 } },
-            right: { value: 80, left: { value: 75 }, right: { value: 85 } }
+            left: {
+                value: 60,
+                left: {
+                    value: 55,
+                    left: { value: 52 },
+                    right: { value: 57 }
+                },
+                right: {
+                    value: 65,
+                    left: { value: 62 },
+                    right: { value: 68 }
+                }
+            },
+            right: {
+                value: 80,
+                left: {
+                    value: 75,
+                    left: { value: 72 },
+                    right: { value: 78 }
+                },
+                right: {
+                    value: 85,
+                    left: { value: 82 },
+                    right: { value: 88 }
+                }
+            }
         }
     };
 
-    const [target, setTarget] = useState(45);
+    const [target, setTarget] = useState(42);
     const [message, setMessage] = useState("Select the root node to start.");
     const [currentNode, setCurrentNode] = useState(null);
     const [isAnimating, setIsAnimating] = useState(false);
 
     const resetGame = () => {
         setCurrentNode(null);
-        setMessage("Incorrect! ❌ Search restarted.Search restarted. Select the root node to start.");
+        setMessage("Search restarted. Select the root node to start.");
         setIsAnimating(false);
-        gsap.to(".node", { backgroundColor: "#6200ea", duration: 0.5 });
+        gsap.to(".node", { backgroundColor: "#6200ea", opacity: 1, duration: 0.5 });
     };
 
     const handleNodeSelection = (node) => {
@@ -33,12 +81,12 @@ const BstPractice = () => {
 
         if (!currentNode) {
             if (node.value !== 50) {
-                setMessage("Incorrect! Search restarted. ❌ Select the root node (50) first.");
+                setMessage("Incorrect! ❌ Select the root node (50) first.");
                 resetGame();
                 return;
             }
             setCurrentNode(node);
-            setMessage("Correct! ✅ Now choose the next step.Left or Right?");
+            setMessage("Correct! ✅ Now choose the next step. Left or Right?");
             return;
         }
 
@@ -46,21 +94,31 @@ const BstPractice = () => {
 
         if (node.value === target) {
             setMessage(`Correct! ${target} found! ✅`);
-            gsap.to(`#node-${node.value}`, { backgroundColor: "green", duration: 0.5, onComplete: () => setIsAnimating(false) });
+            gsap.to(`#node-${node.value}`, { backgroundColor: "green", duration: 0.5 });
             return;
         }
 
-        setTimeout(() => {
-            if ((target < currentNode.value && node.value === currentNode.left?.value) ||
-                (target > currentNode.value && node.value === currentNode.right?.value)) {
-                setCurrentNode(node);
-                setMessage("Correct! ✅ Choose the next step.Left or Right?");
+        if ((target < currentNode.value && node.value === currentNode.left?.value) ||
+            (target > currentNode.value && node.value === currentNode.right?.value)) {
+            // Gray out the wrong subtree
+            if (target < currentNode.value) {
+                grayOutSubtree(currentNode.right);
             } else {
-                setMessage("Incorrect! ❌ Search restarted.");
-                resetGame();
+                grayOutSubtree(currentNode.left);
             }
-            setIsAnimating(false);
-        }, 800);
+            setCurrentNode(node);
+            setMessage("Correct! ✅ Choose the next step. Left or Right?");
+        } else {
+            setMessage("Incorrect! ❌ Search restarted.");
+            resetGame();
+        }
+    };
+
+    const grayOutSubtree = (node) => {
+        if (!node) return;
+        gsap.to(`#node-${node.value}`, { opacity: 0.3, duration: 0.5 });
+        grayOutSubtree(node.left);
+        grayOutSubtree(node.right);
     };
 
     const renderTree = (node) => {

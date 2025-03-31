@@ -53,7 +53,7 @@ function Header() {
         <header className="app-header" style={{ backgroundColor: '#6200ea' }}>
             <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: '#6200ea' }}>
                 <div className="container-fluid">
-                    <Link className="navbar-brand" to="/home" style={{ marginLeft: '70px', color: 'white' }}>LOGO</Link>
+                    <Link className="navbar-brand" to="/home" style={{ marginLeft: '70px', color: 'white' }}>AlgoLab</Link>
                     <div className="collapse navbar-collapse justify-content-center">
                         <ul className="navbar-nav">
                             <li className="nav-item">
