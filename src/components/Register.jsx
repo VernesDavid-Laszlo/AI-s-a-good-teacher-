@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase-config';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import '../styles/Login.css';
 
@@ -23,23 +23,18 @@ function Register() {
             await sendEmailVerification(user);
             alert('Verification email sent. Please check your inbox.');
 
-            // Save user data to Firestore after email verification
-            const checkEmailVerified = setInterval(async () => {
-                // Reload user data
-                await user.reload();
-                if (user.emailVerified) {
-                    clearInterval(checkEmailVerified);
-                    // Save to Firestore
-                    await setDoc(doc(db, "users", user.uid), {
-                        email: user.email,
-                        username: username,
-                        role: parseInt(role),
-                    });
-                    alert('Email verified. Registration complete.');
-                    navigate('/login'); // Navigate to login page
-                }
-            }, 1000); // Check every 1 second for email verification
+            // Save user data to Firestore with 'approved: false' for teachers
+            await setDoc(doc(db, "users", user.uid), {
+                email: user.email,
+                username: username,
+                role: parseInt(role),
+                approved: role === "1" ? false : true, // Teachers require approval
+            });
 
+            // Sign out the user to prevent automatic login before approval
+            await signOut(auth);
+            alert('Registration complete. If you registered as a teacher, wait for admin approval.');
+            navigate('/login'); // Navigate to login page
         } catch (error) {
             console.error("Error registering user", error);
             alert(error.message);

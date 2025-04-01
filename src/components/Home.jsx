@@ -58,13 +58,13 @@ function Home() {
     const renderCardWithImage2 = () => (
         <div className="home-section row align-items-center">
             <div className="col-md-6 d-flex justify-content-center">
-                <img src="/ai.png" alt="AI" className="home-image" />
+                <img src="/teacher.png" alt="AI" className="home-image" />
             </div>
             <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
                 <div className="home-container2">
-                    <h1 className="welcome-text">1</h1>
+                    <h1 className="welcome-text">Interactive learning</h1>
                     <p></p>
-                    <p className="slogan-text">text1</p>
+                    <p className="slogan-text">Learning with animations and practice opportunities, as well as feedback from teachers and AI.</p>
                 </div>
             </div>
         </div>
@@ -74,13 +74,13 @@ function Home() {
         <div className="home-section row align-items-center">
             <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
                 <div className="home-container">
-                    <h1 className="welcome-text">2</h1>
+                    <h1 className="welcome-text">Transparency</h1>
                     <p></p>
-                    <p className="slogan-text">text2</p>
+                    <p className="slogan-text">Easy to use and transparent to everyone</p>
                 </div>
             </div>
             <div className="col-md-6 d-flex justify-content-center">
-                <img src="/teacher.png" alt="AI" className="home-image" />
+                <img src="/ai.png" alt="AI" className="home-image" />
             </div>
         </div>
     );

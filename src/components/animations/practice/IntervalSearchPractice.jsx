@@ -1,52 +1,56 @@
 import { useState } from "react";
 import { gsap } from "gsap";
 
-const FibonacciSearchPractice = () => {
+const IntervalSearchPractice = () => {
     const initialArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 23, 45, 53, 59, 61, 78, 81, 90, 98];
-    const [array, setArray] = useState(initialArray);
+    const [array] = useState(initialArray);
     const [target, setTarget] = useState(78);
-    const [message, setMessage] = useState("Select a Fibonacci index to start searching.");
-    const [fibNumbers, setFibNumbers] = useState([0, 1, 1, 2, 3, 5, 8, 13, 21]);
-    const [fibM, setFibM] = useState(6);
-    const [offset, setOffset] = useState(-1);
-    const [fibIndex, setFibIndex] = useState(null);
+    const [message, setMessage] = useState("Select the estimated index for the next search step.");
+    const [low, setLow] = useState(0);
+    const [high, setHigh] = useState(array.length - 1);
+    const [currentIndex, setCurrentIndex] = useState(null);
 
-    const resetGame = (customMessage = "Search restarted. Select the correct Fibonacci index.") => {
-        setFibM(6);
-        setOffset(-1);
-        setFibIndex(null);
+    const resetGame = (customMessage = "Search restarted. Try again!") => {
+        setLow(0);
+        setHigh(array.length - 1);
+        setCurrentIndex(null);
         setMessage(customMessage);
-        gsap.to(".bar", { backgroundColor: "#6200ea", opacity: 1, duration: 0.5 });
+        gsap.to(".box", { backgroundColor: "#6200ea", opacity: 1, duration: 0.5 });
     };
 
-    const handleFibSelection = (index) => {
-        const validIndex = Math.min(offset + fibNumbers[fibM - 2], array.length - 1);
-        if (index !== validIndex) {
-            resetGame(`Incorrect! The correct index was ${validIndex}. Search restarted ❌`);
+    const calculateIndex = () => {
+        if (low === high) return low;
+        return low + Math.floor(((target - array[low]) * (high - low)) / (array[high] - array[low]));
+    };
+
+    const handleIndexSelection = (index) => {
+        const expectedIndex = calculateIndex();
+        if (index !== expectedIndex) {
+            resetGame(`Incorrect! The correct index was ${expectedIndex}. Try again ❌`);
             return;
         }
-        setFibIndex(index);
-        gsap.to(`#bar-${index}`, { backgroundColor: "yellow", duration: 0.5 });
+        setCurrentIndex(index);
+        gsap.to(`#box-${index}`, { backgroundColor: "yellow", duration: 0.5 });
 
         if (array[index] === target) {
             setMessage(`Correct! ${target} found at index ${index}! 🎉✅`);
-            gsap.to(`#bar-${index}`, { backgroundColor: "green", duration: 0.5 });
+            gsap.to(`#box-${index}`, { backgroundColor: "green", duration: 0.5 });
             return;
         }
 
-        setMessage(`Pivot selected: ${array[index]}. Should we check left or right? ✅`);
+        setMessage(`Pivot: ${array[index]}. Should we go left or right?`);
     };
 
     const handleDirectionSelection = (direction) => {
-        if (fibIndex === null) {
-            resetGame("You must select a Fibonacci index first! ❌");
+        if (currentIndex === null) {
+            resetGame("You must select an index first! ❌");
             return;
         }
 
-        const mid = fibIndex;
+        const mid = currentIndex;
         if (array[mid] === target) {
             setMessage(`Correct! ${target} found at index ${mid}! 🎉✅`);
-            gsap.to(`#bar-${mid}`, { backgroundColor: "green", duration: 0.5 });
+            gsap.to(`#box-${mid}`, { backgroundColor: "green", duration: 0.5 });
             return;
         }
 
@@ -55,25 +59,19 @@ const FibonacciSearchPractice = () => {
             return;
         }
 
-        gsap.to(`#bar-${mid}`, { backgroundColor: "red", duration: 0.5 });
-
+        gsap.to(`#box-${mid}`, { backgroundColor: "red", duration: 0.5 });
         if (direction === "left") {
-            setFibM(fibM - 2);
-            gsap.to(".bar", { opacity: (i) => (i >= mid ? 0.3 : 1), duration: 0.5 });
+            setHigh(mid - 1);
         } else {
-            setFibM(fibM - 1);
-            setOffset(mid);
-            gsap.to(".bar", { opacity: (i) => (i <= mid ? 0.3 : 1), duration: 0.5 });
+            setLow(mid + 1);
         }
-
-        setMessage("✅ Correct move! Now select the new Fibonacci index.");
+        setMessage("✅ Correct move! Now select the new index.");
     };
 
     return (
         <div style={{ textAlign: "center", padding: "20px" }}>
-            <h3>Fibonacci Search Explanation</h3>
-            <p>Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21...</p>
-            <p>We use Fibonacci numbers to decide where to search next. Start by selecting the correct index.</p>
+            <h3>Interpolation Search Practice</h3>
+            <p>Estimate the correct index using the formula and click it.</p>
             <input
                 type="number"
                 value={target || ""}
@@ -89,9 +87,9 @@ const FibonacciSearchPractice = () => {
                 {array.map((num, index) => (
                     <div
                         key={index}
-                        id={`bar-${index}`}
-                        className="bar"
-                        onClick={() => handleFibSelection(index)}
+                        id={`box-${index}`}
+                        className="box"
+                        onClick={() => handleIndexSelection(index)}
                         style={{
                             width: "50px",
                             height: "50px",
@@ -102,7 +100,7 @@ const FibonacciSearchPractice = () => {
                             color: "white",
                             fontSize: "20px",
                             cursor: "pointer",
-                            opacity: index >= offset && index < offset + fibNumbers[fibM - 2] ? 1 : 0.3,
+                            opacity: index >= low && index <= high ? 1 : 0.3,
                         }}
                     >
                         {num}
@@ -117,4 +115,4 @@ const FibonacciSearchPractice = () => {
     );
 };
 
-export default FibonacciSearchPractice;
+export default IntervalSearchPractice;

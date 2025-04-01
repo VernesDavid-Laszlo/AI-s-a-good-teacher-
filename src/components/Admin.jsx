@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { FaTimesCircle } from "react-icons/fa";
+import { FaTimesCircle, FaCheckCircle } from "react-icons/fa";
 import Header from '../components/Header';
 import "../styles/Admin.css";
 
@@ -20,7 +20,6 @@ function Admin() {
                 if (userSnap.exists() && userSnap.data().role === 0) {
                     setIsAdmin(true);
 
-                    // 🔹 Lekérjük az összes usert (kivéve az adminokat)
                     const usersCollection = collection(db, "users");
                     const usersSnapshot = await getDocs(usersCollection);
                     const usersList = usersSnapshot.docs
@@ -35,7 +34,6 @@ function Admin() {
         checkAdmin();
     }, [auth.currentUser]);
 
-    // ❌ Felhasználó törlése
     const handleDeleteUser = async (userId) => {
         if (window.confirm("Biztosan törölni szeretnéd ezt a felhasználót?")) {
             try {
@@ -46,6 +44,17 @@ function Admin() {
                 console.error("Hiba a törlés során:", error);
                 alert("Hiba történt a törlés során!");
             }
+        }
+    };
+
+    const handleApproveTeacher = async (userId) => {
+        try {
+            await updateDoc(doc(db, "users", userId), { approved: true });
+            setUsers(prevUsers => prevUsers.map(user => user.id === userId ? { ...user, approved: true } : user));
+            alert("A tanár jóváhagyva!");
+        } catch (error) {
+            console.error("Hiba az engedélyezés során:", error);
+            alert("Hiba történt az engedélyezés során!");
         }
     };
 
@@ -63,13 +72,19 @@ function Admin() {
                                     {users.map(user => (
                                         <li key={user.id} className="user-row">
                                             <div className="user-info">
-                                                <span className="user-name">{user.username}  </span>
+                                                <span className="user-name">{user.username} </span>
                                                 <span className="user-email">: {user.email} ,</span>
                                                 <span className="user-role">
                                                     {user.role === 2 ? "Student" : user.role === 1 ? "Teacher" : "Unknown"}
                                                 </span>
+                                                {user.role === 1 && !user.approved && (
+                                                    <span className="pending-approval"> (Pending...) </span>
+                                                )}
                                             </div>
                                             <div className="user-icons">
+                                                {user.role === 1 && !user.approved && (
+                                                    <FaCheckCircle className="icon green" onClick={() => handleApproveTeacher(user.id)} />
+                                                )}
                                                 <FaTimesCircle className="icon red" onClick={() => handleDeleteUser(user.id)} />
                                             </div>
                                         </li>
