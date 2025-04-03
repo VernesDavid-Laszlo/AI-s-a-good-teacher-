@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './SortAnimations.css';
+import './SelectionSortAnimation.css';
 
 const selectionSortSteps = (array) => {
     const arr = [...array];
@@ -76,7 +76,7 @@ const SelectionSortAnimation = () => {
     }, [isSorting, currentStep, steps]);
 
     const swapElements = (indices, newArray) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.array-elementSS');
         const [firstIdx, secondIdx] = indices;
 
         const firstElement = elements[firstIdx];
@@ -93,7 +93,7 @@ const SelectionSortAnimation = () => {
     };
 
     const compareElements = (indices) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.array-elementSS');
         const [firstIdx, secondIdx] = indices;
 
         gsap.to(elements[firstIdx], { backgroundColor: '#ff9800', duration: 0.5 });
@@ -106,7 +106,7 @@ const SelectionSortAnimation = () => {
     };
 
     const markSorted = (index) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.array-elementSS');
         const sortedElement = elements[index];
 
         gsap.to(sortedElement, { backgroundColor: '#4caf50', duration: 0.7 });
@@ -114,7 +114,7 @@ const SelectionSortAnimation = () => {
 
     useEffect(() => {
         if (isSorting && currentStep === steps.length) {
-            const elements = document.querySelectorAll('.array-element');
+            const elements = document.querySelectorAll('.array-elementSS');
             elements.forEach((element) => {
                 gsap.to(element, { backgroundColor: '#4caf50', duration: 1 });
             });
@@ -146,9 +146,9 @@ const SelectionSortAnimation = () => {
                     Set Array
                 </button>
             </div>
-            <div className="array-container">
+            <div className="array-containerSS">
                 {currentArray.map((value, index) => (
-                    <div key={index} className="array-element">
+                    <div key={index} className="array-elementSS">
                         {value}
                     </div>
                 ))}

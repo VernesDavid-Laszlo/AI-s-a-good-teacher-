@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './SortAnimations.css';
+import './MergeSortAnimations.css';
 
 // Merge Sort lépéseit generáló algoritmus
 const mergeSortSteps = (array) => {

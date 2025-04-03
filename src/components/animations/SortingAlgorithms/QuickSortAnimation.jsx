@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './SortAnimations.css';
+import './QuickSortAnimation.css';
 
 const quickSortSteps = (array) => {
     const arr = [...array];
@@ -84,7 +84,7 @@ const QuickSortAnimation = () => {
     }, [isSorting, currentStep, steps]);
 
     const swapElements = (indices, newArray) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.array-elementQ');
         const [firstIdx, secondIdx] = indices;
 
         // Felemelt elemek animációja
@@ -103,7 +103,7 @@ const QuickSortAnimation = () => {
     };
 
     const partitionElements = (low, high, pivotIndex) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.array-elementQ');
         const pivotElement = elements[pivotIndex];
 
         // Kiemeljük a pivotot
@@ -129,7 +129,7 @@ const QuickSortAnimation = () => {
     useEffect(() => {
         if (isSorting && currentStep === steps.length) {
             // Az összes elem zöldre váltása, amikor vége a rendezésnek
-            const elements = document.querySelectorAll('.array-element');
+            const elements = document.querySelectorAll('.array-elementQ');
             elements.forEach((element) => {
                 gsap.to(element, { backgroundColor: '#4caf50', duration: 1 });
             });
@@ -161,9 +161,9 @@ const QuickSortAnimation = () => {
                     Set Array
                 </button>
             </div>
-            <div className="array-container">
+            <div className="array-containerQ">
                 {currentArray.map((value, index) => (
-                    <div key={index} className="array-element">
+                    <div key={index} className="array-elementQ">
                         {value}
                     </div>
                 ))}

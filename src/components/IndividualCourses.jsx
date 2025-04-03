@@ -26,7 +26,9 @@ const animationComponents = {
     BinarySearchTreePractice: React.lazy(() => import('./animations/practice/BinarySearchTreePractice.jsx')),
     FibonacciSearchPractice: React.lazy(() => import('./animations/practice/FibonacciSearchPractice.jsx')),
     IntervalSearchPractice: React.lazy(() => import('./animations/practice/IntervalSearchPractice.jsx')),
-    LinearSearchPractice: React.lazy(() => import('./animations/practice/LinearSearchPractice.jsx'))
+    LinearSearchPractice: React.lazy(() => import('./animations/practice/LinearSearchPractice.jsx')),
+    BubbleSortPractice: React.lazy(() => import('./animations/practice/BubbleSortPractice.jsx')),
+    SelectionSortPractice: React.lazy(() => import('./animations/practice/SelectionSortPractice.jsx'))
 };
 
 const IndividualCourses = () => {

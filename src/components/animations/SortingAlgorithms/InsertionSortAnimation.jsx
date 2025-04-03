@@ -1,45 +1,76 @@
 import { useEffect, useState } from "react";
 import { gsap } from "gsap";
-import "./SortAnimations.css";
+import "./InsertionSortAnimation.css"; // Módosított CSS import
 
-// Insertion Sort algoritmus lépéseinek generálása
+// Improved Insertion Sort algorithm steps generation
 const insertionSortSteps = (array) => {
     const arr = [...array];
     const steps = [];
+
+    // Mark first element as initially sorted
+    steps.push({ type: "markSorted", index: 0 });
+
     for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
+        const current = arr[i];
         let j = i - 1;
 
-        // Kiemeljük a jelenlegi elemet
+        // Highlight the current element we're inserting
         steps.push({ type: "highlight", index: i });
 
+        // Make a copy of the array before modifications
+        const initialArrayState = [...arr];
+
+        // Find the correct position while shifting elements
         while (j >= 0 && arr[j] > current) {
-            // Két elem kiemelése és cseréje
-            steps.push({ type: "swap", indices: [j, j + 1], array: [...arr] });
-            arr[j + 1] = arr[j]; // Elem mozgatása a következő helyre
+            // Compare elements
+            steps.push({ type: "compare", indices: [j, j + 1] });
+
+            // Shift element right
+            arr[j + 1] = arr[j];
+            steps.push({
+                type: "shift",
+                fromIndex: j,
+                toIndex: j + 1,
+                array: [...arr],
+                current: current
+            });
+
             j--;
         }
 
-        // Az aktuális elem helyére való beillesztése
-        arr[j + 1] = current;
-        steps.push({ type: "insert", index: j + 1, value: current, array: [...arr] });
+        // If no shifting occurred, still compare
+        if (j === i - 1) {
+            steps.push({ type: "compare", indices: [j, j + 1] });
+        }
 
-        // Az elem végleges helyének megjelölése
-        steps.push({ type: "sorted", index: j + 1 });
+        // Insert the current element at its correct position
+        arr[j + 1] = current;
+
+        // Add step to show insertion
+        steps.push({
+            type: "insert",
+            index: j + 1,
+            value: current,
+            array: [...arr]
+        });
+
+        // Mark this position as sorted
+        steps.push({ type: "markSorted", index: j + 1 });
     }
 
-    // Az egész tömb zöldre váltása, amikor minden elem a helyén van
+    // Mark all elements as sorted when complete
     steps.push({ type: "complete" });
     return steps;
 };
 
-// Komponens az animációk futtatásához
+// Component for running the animations
 const InsertionSortAnimation = () => {
     const [arrayInput, setArrayInput] = useState("3, 2, 5, 9, 1, 8, 4");
     const [currentArray, setCurrentArray] = useState([3, 2, 5, 9, 1, 8, 4]);
     const [steps, setSteps] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [isSorting, setIsSorting] = useState(false);
+    const [sortedIndices, setSortedIndices] = useState([]);
 
     const handleArrayChange = () => {
         try {
@@ -47,10 +78,28 @@ const InsertionSortAnimation = () => {
                 .split(",")
                 .map((num) => parseInt(num.trim(), 10))
                 .filter((num) => !isNaN(num));
+
+            if (parsedArray.length === 0) {
+                alert("Please enter at least one valid number.");
+                return;
+            }
+
             setCurrentArray(parsedArray);
             setSteps([]);
             setCurrentStep(0);
             setIsSorting(false);
+            setSortedIndices([]);
+
+            // Reset all elements to default style
+            const elements = document.querySelectorAll(".insertion-array-element");
+            elements.forEach(element => {
+                gsap.to(element, {
+                    backgroundColor: "#3498db",
+                    scale: 1,
+                    y: 0,
+                    duration: 0.3
+                });
+            });
         } catch {
             alert("Invalid input. Please provide a comma-separated list of numbers.");
         }
@@ -61,76 +110,187 @@ const InsertionSortAnimation = () => {
             alert("Array is empty.");
             return;
         }
-        setSteps(insertionSortSteps(currentArray));
+
+        // Reset visual state
+        setSortedIndices([]);
+
+        // Reset all elements to default style
+        const elements = document.querySelectorAll(".insertion-array-element");
+        elements.forEach(element => {
+            gsap.to(element, {
+                backgroundColor: "#3498db",
+                scale: 1,
+                y: 0,
+                duration: 0.3
+            });
+        });
+
+        // Generate steps and start animation
+        const generatedSteps = insertionSortSteps([...currentArray]);
+        setSteps(generatedSteps);
         setIsSorting(true);
         setCurrentStep(0);
     };
 
     useEffect(() => {
-        if (!isSorting || currentStep >= steps.length) return;
+        if (!isSorting || currentStep >= steps.length) {
+            if (currentStep >= steps.length && steps.length > 0) {
+                setIsSorting(false);
+            }
+            return;
+        }
 
         const step = steps[currentStep];
-        if (step.type === "highlight") {
-            highlightElement(step.index);
-        } else if (step.type === "swap") {
-            swapElements(step.indices, step.array);
-        } else if (step.type === "insert") {
-            insertElement(step.index, step.value, step.array);
-        } else if (step.type === "sorted") {
-            markAsSorted(step.index);
-        } else if (step.type === "complete") {
-            markAllAsSorted();
+
+        switch (step.type) {
+            case "highlight":
+                highlightElement(step.index);
+                break;
+            case "compare":
+                compareElements(step.indices);
+                break;
+            case "shift":
+                shiftElement(step.fromIndex, step.toIndex, step.array, step.current);
+                break;
+            case "insert":
+                insertElement(step.index, step.value, step.array);
+                break;
+            case "markSorted":
+                markAsSorted(step.index);
+                break;
+            case "complete":
+                markAllAsSorted();
+                break;
+            default:
+                break;
         }
 
         const timeout = setTimeout(() => {
             setCurrentStep((prev) => prev + 1);
-        }, 1000); // 1 másodperc animációs lépés
+        }, 800); // Speed adjusted for better visualization
 
         return () => clearTimeout(timeout);
     }, [isSorting, currentStep, steps]);
 
-    // Az aktuális elem kiemelése
+    // Highlight the current element being processed
     const highlightElement = (index) => {
-        const elements = document.querySelectorAll(".array-element");
-        gsap.to(elements[index], { backgroundColor: "#ff9800", scale: 1.2, duration: 0.7 });
+        const elements = document.querySelectorAll(".insertion-array-element");
+        if (elements[index]) {
+            // Reset other elements that aren't sorted
+            elements.forEach((el, idx) => {
+                if (!sortedIndices.includes(idx) && idx !== index) {
+                    gsap.to(el, {
+                        backgroundColor: "#ff9800",
+                        scale: 1,
+                        duration: 0.3
+                    });
+                }
+            });
+
+            // Highlight the selected element
+            gsap.to(elements[index], {
+                backgroundColor: "#ff9800",
+                scale: 1.1,
+                y: -20,
+                duration: 0.5
+            });
+        }
     };
 
-    // Lépésről lépésre történő csere animáció
-    const swapElements = (indices, newArray) => {
-        const elements = document.querySelectorAll(".array-element");
-        const [from, to] = indices;
+    // Compare two elements
+    const compareElements = (indices) => {
+        const elements = document.querySelectorAll(".insertion-array-element");
+        const [first, second] = indices;
 
-        gsap.to(elements[from], { y: -60, duration: 0.5 });
-        gsap.to(elements[to], { y: -60, duration: 0.5 });
+        if (elements[first] && elements[second]) {
+            // Highlight the comparison
+            gsap.to(elements[first], {
+                backgroundColor: "#e74c3c",
+                duration: 0.3
+            });
 
-        setTimeout(() => {
-            setCurrentArray(newArray);
-            gsap.to(elements[from], { y: 0, duration: 0.5 });
-            gsap.to(elements[to], { y: 0, duration: 0.5 });
-        }, 500); // 500ms várakozás az animáció befejeződése előtt
+            if (!sortedIndices.includes(second)) {
+                gsap.to(elements[second], {
+                    backgroundColor: "#ff9800",
+                    duration: 0.3
+                });
+            }
+        }
     };
 
-    // Elem beillesztése a helyére
+    // Shift elements to make room for insertion
+    const shiftElement = (fromIndex, toIndex, newArray, current) => {
+        setCurrentArray(newArray);
+
+        const elements = document.querySelectorAll(".insertion-array-element");
+        if (elements[fromIndex] && elements[toIndex]) {
+            // Visual indication of shift
+            gsap.to(elements[fromIndex], {
+                x: 60,
+                duration: 0.3,
+                onComplete: () => {
+                    gsap.to(elements[fromIndex], {
+                        x: 0,
+                        duration: 0.1
+                    });
+                }
+            });
+        }
+    };
+
+    // Insert element at the correct position
     const insertElement = (index, value, newArray) => {
         setCurrentArray(newArray);
+
+        const elements = document.querySelectorAll(".insertion-array-element");
+        if (elements[index]) {
+            // Highlight the insertion
+            gsap.to(elements[index], {
+                backgroundColor: "#9b59b6",
+                scale: 1.1,
+                duration: 0.4,
+                onComplete: () => {
+                    // Reset scale but keep color if sorted
+                    gsap.to(elements[index], {
+                        scale: 1,
+                        y: 0,
+                        duration: 0.2
+                    });
+                }
+            });
+        }
     };
 
-    // Elem végleges helyére kerülése
+    // Mark an element as sorted
     const markAsSorted = (index) => {
-        const elements = document.querySelectorAll(".array-element");
-        gsap.to(elements[index], { backgroundColor: "#4caf50", duration: 0.7 });
+        setSortedIndices(prev => [...prev, index]);
+
+        const elements = document.querySelectorAll(".insertion-array-element");
+        if (elements[index]) {
+            gsap.to(elements[index], {
+                backgroundColor: "#4caf50",
+                duration: 0.5
+            });
+        }
     };
 
-    // Az egész tömb zöldre váltása
+    // Mark all elements as sorted
     const markAllAsSorted = () => {
-        const elements = document.querySelectorAll(".array-element");
+        const elements = document.querySelectorAll(".insertion-array-element");
         elements.forEach((element) => {
-            gsap.to(element, { backgroundColor: "#4caf50", duration: 0.7 });
+            gsap.to(element, {
+                backgroundColor: "#4caf50",
+                scale: 1,
+                y: 0,
+                duration: 0.5
+            });
         });
+
+        setSortedIndices([...Array(currentArray.length).keys()]);
     };
 
     return (
-        <div>
+        <div className="insertion-sort-container">
             <div style={{ marginBottom: "20px" }}>
                 <input
                     type="text"
@@ -153,14 +313,23 @@ const InsertionSortAnimation = () => {
                 >
                     Set Array
                 </button>
+
             </div>
-            <div className="array-container">
+            <br/>
+            <div className="insertion-array-container">
                 {currentArray.map((value, index) => (
-                    <div key={index} className="array-element">
+                    <div
+                        key={index}
+                        className="insertion-array-element"
+                        style={{
+                            backgroundColor: sortedIndices.includes(index) ? "#4caf50" : "#3498db"
+                        }}
+                    >
                         {value}
                     </div>
                 ))}
             </div>
+
             <button
                 onClick={startSorting}
                 style={{
@@ -172,6 +341,7 @@ const InsertionSortAnimation = () => {
                     border: "none",
                     cursor: "pointer",
                 }}
+                disabled={isSorting}
             >
                 Start Sorting
             </button>

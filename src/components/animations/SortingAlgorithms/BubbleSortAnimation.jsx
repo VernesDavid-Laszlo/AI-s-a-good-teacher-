@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './SortAnimations.css';
+import './BubbleSortAnimation.css'; // Módosított CSS import
 
 const bubbleSortSteps = (array) => {
     const arr = [...array];
@@ -46,6 +46,12 @@ const BubbleSortAnimation = () => {
             setSteps([]);
             setCurrentStep(0);
             setIsSorting(false);
+
+            // Alaphelyzet visszaállítása
+            const elements = document.querySelectorAll('.bubble-array-element');
+            elements.forEach(el => {
+                el.classList.remove('bubble-compare', 'bubble-sorted');
+            });
         } catch {
             alert('Invalid input. Please provide a comma-separated list of numbers.');
         }
@@ -56,6 +62,13 @@ const BubbleSortAnimation = () => {
             alert('Array is empty.');
             return;
         }
+
+        // Alaphelyzet visszaállítása
+        const elements = document.querySelectorAll('.bubble-array-element');
+        elements.forEach(el => {
+            el.classList.remove('bubble-compare', 'bubble-sorted');
+        });
+
         setSteps(bubbleSortSteps(currentArray));
         setIsSorting(true);
         setCurrentStep(0);
@@ -66,7 +79,7 @@ const BubbleSortAnimation = () => {
 
         const step = steps[currentStep];
         if (step.type === 'compare') {
-            highlightElements(step.indices, 'compare');
+            highlightElements(step.indices, 'bubble-compare');
         } else if (step.type === 'swap') {
             swapElements(step.indices, step.array);
         } else if (step.type === 'sorted') {
@@ -81,18 +94,18 @@ const BubbleSortAnimation = () => {
     }, [isSorting, currentStep, steps]);
 
     const highlightElements = (indices, className) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.bubble-array-element');
         elements.forEach((el, idx) => {
             if (indices.includes(idx)) {
                 el.classList.add(className);
             } else {
-                el.classList.remove('compare');
+                el.classList.remove('bubble-compare');
             }
         });
     };
 
     const swapElements = (indices, newArray) => {
-        const elements = document.querySelectorAll('.array-element');
+        const elements = document.querySelectorAll('.bubble-array-element');
         const [firstIdx, secondIdx] = indices;
 
         // Felemelt elemek animációja
@@ -112,13 +125,14 @@ const BubbleSortAnimation = () => {
     };
 
     const markAsSorted = (index) => {
-        const elements = document.querySelectorAll('.array-element');
-        const element = elements[index];
-        element.classList.add('sorted');
+        const elements = document.querySelectorAll('.bubble-array-element');
+        if (elements[index]) {
+            elements[index].classList.add('bubble-sorted');
+        }
     };
 
     return (
-        <div>
+        <div className="bubble-sort-container">
             <div style={{ marginBottom: '20px' }}>
                 <input
                     type="text"
@@ -142,9 +156,9 @@ const BubbleSortAnimation = () => {
                     Set Array
                 </button>
             </div>
-            <div className="array-container">
+            <div className="bubble-array-container">
                 {currentArray.map((value, index) => (
-                    <div key={index} className="array-element">
+                    <div key={index} className="bubble-array-element">
                         {value}
                     </div>
                 ))}
@@ -160,6 +174,7 @@ const BubbleSortAnimation = () => {
                     border: 'none',
                     cursor: 'pointer',
                 }}
+                disabled={isSorting}
             >
                 Start Sorting
             </button>
