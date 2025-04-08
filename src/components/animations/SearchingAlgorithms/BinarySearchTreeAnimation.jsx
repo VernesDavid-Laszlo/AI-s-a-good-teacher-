@@ -63,8 +63,69 @@ const BSTAnimation = () => {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h2>Binary Search Tree Animation</h2>
+        <div style={{textAlign: "center", padding: "20px", fontFamily: "Arial"}}>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            }}>
+                <p>This animation shows how searching works in a Binary Search Tree (BST). A BST is a tree-based data
+                    structure with special properties:</p>
+                <ul style={{textAlign: "left"}}>
+                    <li>Each node has at most two children (left and right)</li>
+                    <li>All nodes in the left subtree have values less than the node's value</li>
+                    <li>All nodes in the right subtree have values greater than the node's value</li>
+                </ul>
+
+                <p><strong>Time Complexity:</strong> O(h) where h is the height of the tree. In a balanced tree, this is
+                    O(log n).</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Unvisited nodes</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently examining</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Found</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{width: "20px", height: "20px", backgroundColor: "red", borderRadius: "3px"}}></div>
+                        <span>Examined but not the target</span>
+                    </div>
+                </div>
+            </div>
+            <br/>
             <input
                 type="number"
                 value={target || ""}

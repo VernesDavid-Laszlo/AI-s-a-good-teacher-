@@ -40,7 +40,71 @@ const BinarySearchAnimation = () => {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
+        <div style={{textAlign: "center", padding: "20px", fontFamily: "Arial"}}>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            }}>
+                <p>This animation demonstrates the binary search algorithm in action. Binary search is an efficient way
+                    to find a target value in a <strong>sorted array</strong>.</p>
+                <p><strong>How the algorithm works:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>Calculate the middle index of the current search range</li>
+                    <li>Compare the middle element (yellow) with the target value</li>
+                    <li>If they match, the search is complete (green)</li>
+                    <li>If the target is greater, search the right half</li>
+                    <li>If the target is smaller, search the left half</li>
+                    <li>Elements checked but not matching turn red</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(log n) - Much faster than linear search's O(n)</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Not examined</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently examining</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Found</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{width: "20px", height: "20px", backgroundColor: "red", borderRadius: "3px"}}></div>
+                        <span>Not a match</span>
+                    </div>
+                </div>
+            </div>
+            <br/>
             <input
                 type="number"
                 value={target || ""}

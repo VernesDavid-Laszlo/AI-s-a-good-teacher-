@@ -28,7 +28,70 @@ const LinearSearchAnimation = () => {
     };
 
     return (
-        <div style={{textAlign: "center", padding: "20px"}}>
+        <div style={{textAlign: "center", padding: "20px", fontFamily: "Arial"}}>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            }}>
+                <p>This animation demonstrates the linear search algorithm in action. Linear search is a simple method
+                    to find a target value in an array by checking each element sequentially.</p>
+                <p><strong>How the algorithm works:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>Examine each element in the array from start to finish</li>
+                    <li>Compare the current element (yellow) with the target value</li>
+                    <li>If they match, the search is complete (green)</li>
+                    <li>If they don't match, move to the next element</li>
+                    <li>Elements checked but not matching turn red</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(n) - Each element may need to be checked in the worst case</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Not examined</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently examining</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Found</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{width: "20px", height: "20px", backgroundColor: "red", borderRadius: "3px"}}></div>
+                        <span>Not a match</span>
+                    </div>
+                </div>
+            </div>
+            <br/>
             <h2>Linear Search Animation</h2>
             <input
                 type="number"

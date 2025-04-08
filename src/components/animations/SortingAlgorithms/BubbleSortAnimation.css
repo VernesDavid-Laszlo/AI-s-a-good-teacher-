@@ -18,15 +18,17 @@
     background-color: #6200ea;
     color: white;
     font-size: 20px;
-    border-radius: 5px;
+    border-radius: 10px;
+    border:2px solid black;
     transition: transform 0.5s, background-color 0.5s, top 0.5s;
     position: relative;
 }
 
 .bubble-array-element.bubble-sorted {
-    background-color: #4caf50; /* Zöld szín */
+    background-color: green;
 }
 
 .bubble-array-element.bubble-compare {
-    background-color: #ff9800; /* Narancssárga szín az összehasonlításra */
+    background-color: yellow;
+    color: black;
 }

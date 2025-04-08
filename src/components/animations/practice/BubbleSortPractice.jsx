@@ -187,7 +187,66 @@ const BubbleSortPractice = () => {
 
     return (
         <div style={{textAlign: 'center', fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto'}}>
-            <h2>Bubble Sort Practice</h2>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto 20px",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                fontFamily: "Arial"
+            }}>
+                <p>This is an interactive practice for the bubble sort algorithm. In this exercise, you'll perform bubble sort yourself by selecting elements and deciding when to swap them.</p>
+                <p><strong>Steps to follow:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>Select two adjacent elements to compare them</li>
+                    <li>Decide whether they need to be swapped or not</li>
+                    <li>Click "Swap" if the left element is greater than the right element</li>
+                    <li>Click "Continue (No Swap)" if the elements are already in order</li>
+                    <li>After each complete pass, the largest unsorted element will be placed in its final position</li>
+                    <li>Continue until all elements are sorted</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(n²) - You'll need to make n-1 passes with decreasing comparisons</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Unsorted element</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently selected</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>In final sorted position</span>
+                    </div>
+                </div>
+            </div>
+
             <div style={{
                 backgroundColor: '#f0f0f0',
                 padding: '15px',
@@ -251,8 +310,8 @@ const BubbleSortPractice = () => {
                         style={{
                             padding: '10px 20px',
                             fontSize: '16px',
-                            backgroundColor: '#ff9800',
-                            color: '#000',
+                            backgroundColor: 'black',
+                            color: 'white',
                             border: 'none',
                             borderRadius: '5px',
                             cursor: 'pointer',
@@ -267,7 +326,7 @@ const BubbleSortPractice = () => {
                         style={{
                             padding: '10px 20px',
                             fontSize: '16px',
-                            backgroundColor: '#2196f3',
+                            backgroundColor: 'black',
                             color: '#fff',
                             border: 'none',
                             borderRadius: '5px',

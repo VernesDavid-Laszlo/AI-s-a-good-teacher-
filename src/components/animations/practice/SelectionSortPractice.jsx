@@ -50,7 +50,8 @@ const SelectionSortPractice = () => {
             // Highlight the found minimum
             const elements = document.querySelectorAll('.array-element');
             gsap.to(elements[index], {
-                backgroundColor: 'orange',
+                backgroundColor: 'yellow',
+                color:'black',
                 duration: 0.5
             });
         } else {
@@ -182,7 +183,6 @@ const SelectionSortPractice = () => {
 
     return (
         <div style={{textAlign: 'center', fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto'}}>
-            <h2>Selection Sort Practice</h2>
             <div style={{
                 backgroundColor: '#f0f0f0',
                 padding: '15px',
@@ -197,8 +197,53 @@ const SelectionSortPractice = () => {
                         ? `Current step: Find the smallest element from position ${currentIndex} to the end`
                         : `Current step: Swap the minimum element with position ${currentIndex}`}
                 </p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Unsorted element</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently selected</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>In final sorted position</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "red",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Not a match</span>
+                    </div>
+                </div>
             </div>
-
+            <br/>
+            <br/>
             <div style={{position: 'relative', marginBottom: '40px', height: '100px'}}>
                 {/* Current index indicator - positioned higher */}
                 {currentIndex < array.length && (
@@ -237,7 +282,7 @@ const SelectionSortPractice = () => {
                                 backgroundColor: finalizedIndices.has(index)
                                     ? 'green'
                                     : index === minIndexFound && practiceStep === 'swap'
-                                        ? 'orange'
+                                        ? 'yellow'
                                         : '#6200ea',
                                 border: '2px solid #000',
                                 fontSize: '20px',

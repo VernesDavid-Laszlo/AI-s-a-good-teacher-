@@ -96,8 +96,8 @@ const SelectionSortAnimation = () => {
         const elements = document.querySelectorAll('.array-elementSS');
         const [firstIdx, secondIdx] = indices;
 
-        gsap.to(elements[firstIdx], { backgroundColor: '#ff9800', duration: 0.5 });
-        gsap.to(elements[secondIdx], { backgroundColor: '#ff9800', duration: 0.5 });
+        gsap.to(elements[firstIdx], { backgroundColor: 'yellow', duration: 0.5 });
+        gsap.to(elements[secondIdx], { backgroundColor: 'yellow', duration: 0.5 });
 
         setTimeout(() => {
             gsap.to(elements[firstIdx], { backgroundColor: '#6200ea', duration: 0.5 });
@@ -109,27 +109,90 @@ const SelectionSortAnimation = () => {
         const elements = document.querySelectorAll('.array-elementSS');
         const sortedElement = elements[index];
 
-        gsap.to(sortedElement, { backgroundColor: '#4caf50', duration: 0.7 });
+        gsap.to(sortedElement, { backgroundColor: 'green', duration: 0.7 });
     };
 
     useEffect(() => {
         if (isSorting && currentStep === steps.length) {
             const elements = document.querySelectorAll('.array-elementSS');
             elements.forEach((element) => {
-                gsap.to(element, { backgroundColor: '#4caf50', duration: 1 });
+                gsap.to(element, { backgroundColor: 'green', duration: 1 });
             });
         }
     }, [currentStep, isSorting, steps.length]);
 
     return (
         <div>
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto 20px",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                fontFamily: "Arial"
+            }}>
+                <p>This animation demonstrates the selection sort algorithm in action. Selection sort is a
+                    straightforward sorting algorithm that divides the list into a sorted and an unsorted part,
+                    repeatedly selecting the smallest element from the unsorted section and moving it to the end of the
+                    sorted section.</p>
+                <p><strong>How the algorithm works:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>Find the smallest element in the unsorted portion of the array (highlighted in blue)</li>
+                    <li>Swap it with the first element of the unsorted portion</li>
+                    <li>Mark the newly placed element as sorted (highlighted in green)</li>
+                    <li>Repeat steps 1-3 for the remaining unsorted portion</li>
+                    <li>Continue until the entire array is sorted</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(n²) - The algorithm always makes n(n-1)/2 comparisons, regardless
+                    of the input</p>
+
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Unsorted element</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Being compared</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Sorted element</span>
+                    </div>
+                </div>
+            </div>
+            <div style={{marginBottom: '20px'}}>
                 <input
                     type="text"
                     value={arrayInput}
                     onChange={(e) => setArrayInput(e.target.value)}
                     placeholder="Enter comma-separated numbers"
-                    style={{ padding: '10px', width: '300px', fontSize: '16px' }}
+                    style={{padding: '10px', width: '300px', fontSize: '16px'}}
                 />
                 <button
                     onClick={handleArrayChange}

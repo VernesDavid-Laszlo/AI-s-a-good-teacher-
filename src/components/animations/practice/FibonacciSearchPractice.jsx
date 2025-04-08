@@ -400,6 +400,7 @@ const FibonacciSearchPractice = () => {
             <div style={{
                 display: "flex",
                 justifyContent: "center",
+                height:'80px',
                 flexWrap: "wrap",
                 gap: "10px",
                 padding: "10px",

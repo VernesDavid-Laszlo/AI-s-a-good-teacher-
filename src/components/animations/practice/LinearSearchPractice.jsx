@@ -39,7 +39,70 @@ const LinearSearchPractice = () => {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
+        <div style={{ textAlign: "center", padding: "20px", fontFamily: "Arial" }}>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            }}>
+                <p>This is an interactive practice for the linear search algorithm. In this exercise, you'll perform the linear search
+                    yourself by selecting elements in the correct order.</p>
+                <p><strong>Steps to follow:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>Click on the first element (leftmost) in the array to begin</li>
+                    <li>If the element matches your target value, you're done!</li>
+                    <li>If not, you must continue by clicking on the next element to the right</li>
+                    <li>Clicking elements out of order will reset the search</li>
+                    <li>Continue until you either find the target or check all elements</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(n) - You may need to check every element in the worst case</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Not examined</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently examining</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Found</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{width: "20px", height: "20px", backgroundColor: "red", borderRadius: "3px"}}></div>
+                        <span>Not a match</span>
+                    </div>
+                </div>
+            </div>
+            <br/>
             <h2>Linear Search Practice</h2>
             <input
                 type="number"

@@ -73,7 +73,82 @@ const BinarySearchPractice = () => {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
+        <div style={{textAlign: "center", padding: "20px", fontFamily: "Arial"}}>
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "20px auto",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            }}>
+                <p>Binary search is an efficient algorithm for finding a target value in a <strong>sorted array</strong>.
+                    It works by repeatedly dividing the search interval in half.</p>
+                <p><strong>How to practice:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>First, select the correct pivot element (the middle element of the current range)</li>
+                    <li>If the pivot equals the target, you've found it!</li>
+                    <li>Otherwise, decide if the target is to the left (if target &lt; pivot) or right (if
+                        target &gt; pivot)
+                    </li>
+                    <li>The search area will be narrowed, and you'll repeat the process</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(log n) - Each step eliminates half of the remaining elements</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Not examined</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Currently examining</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Found</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{width: "20px", height: "20px", backgroundColor: "red", borderRadius: "3px"}}></div>
+                        <span>Not a match</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            opacity: 0.3,
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Excluded from search</span>
+                    </div>
+
+                </div>
+            </div>
+
             <input
                 type="number"
                 value={target || ""}
@@ -84,8 +159,8 @@ const BinarySearchPractice = () => {
                 placeholder="Enter number"
             />
             <button onClick={() => resetGame()}>Reset</button>
-            <p style={{ fontWeight: "bold" }}>{message}</p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+            <p style={{fontWeight: "bold"}}>{message}</p>
+            <div style={{display: "flex", justifyContent: "center", gap: "10px"}}>
                 {array.map((num, index) => (
                     <div
                         key={index}
@@ -109,8 +184,8 @@ const BinarySearchPractice = () => {
                     </div>
                 ))}
             </div>
-            <div style={{ marginTop: "20px" }}>
-                <button onClick={() => handleDirectionSelection("left")} style={{ marginRight: "10px" }}>Left</button>
+            <div style={{marginTop: "20px"}}>
+                <button onClick={() => handleDirectionSelection("left")} style={{marginRight: "10px" }}>Left</button>
                 <button onClick={() => handleDirectionSelection("right")}>Right</button>
             </div>
         </div>

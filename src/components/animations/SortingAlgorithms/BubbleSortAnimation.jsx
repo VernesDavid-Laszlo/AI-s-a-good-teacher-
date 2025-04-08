@@ -133,6 +133,64 @@ const BubbleSortAnimation = () => {
 
     return (
         <div className="bubble-sort-container">
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto 20px",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                fontFamily: "Arial"
+            }}>
+                <p>This animation demonstrates the bubble sort algorithm in action. Bubble sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order.</p>
+                <p><strong>How the algorithm works:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>Compare adjacent elements (highlighted in blue)</li>
+                    <li>If the elements are in the wrong order, swap them</li>
+                    <li>Repeat steps 1-2 for all elements in the array</li>
+                    <li>After each full pass, the largest unsorted element "bubbles up" to its correct position</li>
+                    <li>Elements in their final sorted positions are marked in green</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(n²) - In the worst case, we need to make n passes with n-1 comparisons each</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Unsorted element</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Being compared</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Sorted element</span>
+                    </div>
+                </div>
+            </div>
             <div style={{ marginBottom: '20px' }}>
                 <input
                     type="text"

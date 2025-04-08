@@ -21,11 +21,11 @@ const animationComponents = {
     BinarySearchTreeAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/BinarySearchTreeAnimation.jsx')),
     LinearSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/LinearSearchAnimation.jsx')),
     FibonacciSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/FibonacciSearchAnimation.jsx')),
-    IntervalSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/IntervalSearchAnimation.jsx')),
+    InterpolationSearchAnimation: React.lazy(() => import('./animations/SearchingAlgorithms/InterpolationSearchAnimation.jsx')),
     BinarySearchPractice: React.lazy(() => import('./animations/practice/BinarySearchPractice.jsx')),
     BinarySearchTreePractice: React.lazy(() => import('./animations/practice/BinarySearchTreePractice.jsx')),
     FibonacciSearchPractice: React.lazy(() => import('./animations/practice/FibonacciSearchPractice.jsx')),
-    IntervalSearchPractice: React.lazy(() => import('./animations/practice/IntervalSearchPractice.jsx')),
+    InterpolationSearchPractice: React.lazy(() => import('./animations/practice/InterpolationSearchPractice.jsx')),
     LinearSearchPractice: React.lazy(() => import('./animations/practice/LinearSearchPractice.jsx')),
     BubbleSortPractice: React.lazy(() => import('./animations/practice/BubbleSortPractice.jsx')),
     SelectionSortPractice: React.lazy(() => import('./animations/practice/SelectionSortPractice.jsx'))
@@ -255,11 +255,6 @@ const IndividualCourses = () => {
                                                 return (
                                                     <div key={index}>
                                                         <h4>{animation.title}</h4>
-                                                        {chapter.description && (
-                                                            <p className="animation-description">
-                                                                {chapter.description}
-                                                            </p>
-                                                        )}
                                                         <React.Suspense fallback={<div>Loading animation...</div>}>
                                                             {AnimationComponent ? <AnimationComponent /> : <p>Animation not found</p>}
                                                         </React.Suspense>
@@ -280,7 +275,6 @@ const IndividualCourses = () => {
                                                 return (
                                                     <div key={index}>
                                                         <h4>{practice.title}</h4>
-                                                        <p>{practice.description}</p>
                                                         {PracticeComponent && (
                                                             <React.Suspense fallback={<div>Loading practice...</div>}>
                                                                 <PracticeComponent />
