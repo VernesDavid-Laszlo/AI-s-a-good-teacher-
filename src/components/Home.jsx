@@ -5,11 +5,10 @@ import { doc, getDoc } from 'firebase/firestore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
 import '../styles/Home.css'; // Import custom CSS
-import ChatPopup from '../components/ChatPopup';
+
 
 function Home() {
     const [userData, setUserData] = useState({ username: '', email: '' });
-    const [isPopupOpen, setPopupOpen] = useState(false); // Popup állapot
     const navigate = useNavigate();
 
     const fetchUserData = async (user) => {
@@ -85,20 +84,9 @@ function Home() {
         </div>
     );
 
-    const handleHelpIconClick = () => {
-        setPopupOpen(true); // Popup megnyitása
-    };
-
-    const handleClosePopup = () => {
-        setPopupOpen(false); // Popup bezárása
-    };
 
     return (
         <div className="home-page">
-            <div className="help-icon" onClick={handleHelpIconClick}>
-                <i className="bi bi-question-circle-fill"></i>
-            </div>
-            <ChatPopup isOpen={isPopupOpen} onClose={handleClosePopup} />
             <div className="home-background">
                 <Header user={userData} />
                 <div className="container-fluid">

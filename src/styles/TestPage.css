@@ -1,0 +1,45 @@
+.test-page {
+    background-color: #E8EAF6;
+    width: 100%;
+    height: 100%;
+}
+
+.test-background {
+    background-color: #E8EAF6;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding-top: 150px;
+    padding-bottom: 20px;
+    margin: 0;
+}
+
+.test-card {
+    width: 80%;
+    max-width: 600px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    transform: translateX(0);
+    transition: transform 0.4s ease;
+}
+
+.test-card.shifted {
+    transform: translateX(-280px);
+    transition: transform 0.4s ease;
+}
+
+.test-title {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.test-title.shifted {
+    transform: translateX(-280px);
+    transition: transform 0.4s ease;
+}

@@ -10,6 +10,9 @@ import '../styles/custom-prism.css';
 import '../styles/IndividualCourses.css';
 import PdfPreview from "./PdfPreview.jsx";
 import UploadLessons from "./UploadLessons.jsx";
+import ChatPopup from "./ChatPopup.jsx";
+import ChatAI from "../components/ChatAI";
+import { useNavigate } from "react-router-dom";
 
 const animationComponents = {
     BubbleSortAnimation: React.lazy(() => import('./animations/SortingAlgorithms/BubbleSortAnimation.jsx')),
@@ -43,6 +46,9 @@ const IndividualCourses = () => {
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const [user] = useAuthState(auth);
     const [userRole, setUserRole] = useState(null);
+    const navigate = useNavigate();
+    const { id: courseId } = useParams();
+
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -219,6 +225,8 @@ const IndividualCourses = () => {
                                                             </svg>
                                                         )}
                                                     </div>
+                                                    <br/>
+                                                    <br/>
                                                     {lesson.content.includes('https://') && (
                                                         <PdfPreview
                                                             pdfUrl={lesson.content}
@@ -226,6 +234,7 @@ const IndividualCourses = () => {
                                                             openPdfModal={openPdfModal}
                                                         />
                                                     )}
+                                                    <br/>
                                                     {lesson.title === "Implementation" && lesson.content && (
                                                         <div className="code-container">
                                                             <pre className="line-numbers">
@@ -274,10 +283,27 @@ const IndividualCourses = () => {
                                                 const PracticeComponent = animationComponents[practice.implement];
                                                 return (
                                                     <div key={index}>
-                                                        <h4>{practice.title}</h4>
+                                                        <div className="practice-header">
+                                                            <h4 className="practice-title">{practice.title}</h4>
+                                                            <svg
+                                                                className="sound-icon"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                height="24"
+                                                                viewBox="0 0 24 24"
+                                                                width="24"
+                                                            >
+                                                                <path d="M0 0h24v24H0z" fill="none"/>
+                                                                <path
+                                                                    fill="currentColor"
+                                                                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.26 2.5-4.02zM14 3.23v2.06c3.39.49 6 3.39 6 6.71s-2.61 6.22-6 6.71v2.06c4.45-.5 8-4.27 8-8.77s-3.55-8.27-8-8.77z"
+                                                                />
+                                                            </svg>
+                                                        </div>
+                                                        <br/>
+                                                        <br/>
                                                         {PracticeComponent && (
                                                             <React.Suspense fallback={<div>Loading practice...</div>}>
-                                                                <PracticeComponent />
+                                                                <PracticeComponent/>
                                                             </React.Suspense>
                                                         )}
                                                     </div>
@@ -293,15 +319,34 @@ const IndividualCourses = () => {
                                     </div>
                                     {expandedSections[chapter.id]?.tests && (
                                         <div className="section-content">
-                                            {chapter.tests.map((test, index) => (
-                                                <div key={index}>
-                                                    <h4>{test.title}</h4>
-                                                    <p>Test questions available.</p>
-                                                </div>
-                                            ))}
+                                            {chapter.tests && chapter.tests.length > 0 ? (
+                                                chapter.tests.map((test, index) => (
+                                                    <div
+                                                        key={index}
+                                                        onClick={() => navigate(`/courses/${courseId}/${chapter.id}/test/${index}`)}
+                                                        style={{
+                                                            border: "1px solid #ccc",
+                                                            borderRadius: "8px",
+                                                            padding: "16px",
+                                                            margin: "10px 0",
+                                                            cursor: "pointer",
+                                                            backgroundColor: "#9e76d7",
+                                                            transition: "background-color 0.2s ease",
+                                                        }}
+                                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#CBC3E3"}
+                                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#9e76d7"}
+                                                    >
+                                                        <h4>{test.title || `Test ${index + 1}`}</h4>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p>Nincsenek tesztek ehhez a fejezethez.</p>
+                                            )}
                                         </div>
                                     )}
                                 </div>
+                                <ChatPopup/>
+                                <ChatAI/>
                             </div>
                         ))
                     ) : (
@@ -321,7 +366,7 @@ const IndividualCourses = () => {
                             src={`https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(currentPdfUrl)}`}
                             width="100%"
                             height="500px"
-                            style={{ border: "none" }}
+                            style={{border: "none"}}
                             title="PDF Viewer"
                             onLoad={() => setPdfLoading(false)}
                         ></iframe>

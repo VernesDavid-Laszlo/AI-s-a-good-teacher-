@@ -282,4 +282,30 @@ iframe {
     align-items: center;
 }
 
+.practice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.practice-title {
+    flex-grow: 1; /* A cím kitölti a rendelkezésre álló helyet */
+    margin: 0;
+}
+
+.sound-icon {
+    background: black;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 

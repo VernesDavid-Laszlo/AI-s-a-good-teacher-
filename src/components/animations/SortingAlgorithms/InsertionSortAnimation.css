@@ -1,58 +1,111 @@
 .insertion-sort-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
     font-family: Arial, sans-serif;
+}
+
+.insertion-controls {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.insertion-input-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.insertion-input {
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+}
+
+.insertion-button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #6200ea;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.insertion-button:disabled {
+    background-color: #a880e9;
+    cursor: not-allowed;
 }
 
 .insertion-array-container {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 30px 0;
+    gap: 10px;
 }
 
 .insertion-array-element {
-    height: 50px;
     width: 50px;
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 10px;
     background-color: #6200ea;
     color: white;
     font-size: 20px;
+    border-radius: 10px;
+    border: 2px solid black;
+    transition: background-color 0.3s ease;
+}
+
+.insertion-selected {
+    background-color: purple;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(128, 0, 128, 0.7);
+}
+
+.insertion-compare {
+    background-color: yellow;
+    color: #333;
+}
+
+.insertion-sorted {
+    background-color: green;
+}
+
+.insertion-inserted {
+    animation: pulse 0.5s ease;
+}
+
+.insertion-current-element {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f0f0f0;
     border-radius: 5px;
-    transition: transform 0.5s, background-color 0.5s, top 0.5s;
-    position: relative;
 }
 
-/* Az alábbi osztályok most már csak a GSAP animációkon keresztül kerülnek alkalmazásra,
-   de megtartottam őket referenciaként */
-.insertion-array-element.insertion-sorted {
-    background-color: #4caf50;
+.insertion-button-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 20px;
 }
 
-.insertion-array-element.insertion-compare {
-    background-color: #ff9800;
-}
-
-.insertion-array-element.insertion-pivot {
-    background-color: #d90b31;
-}
-
-.insertion-array-element.insertion-partition {
-    background-color: #ff9800;
-}
-
-.insertion-array-element.insertion-key {
-    background-color: #ff9800;
-}
-
-.insertion-array-element.insertion-insert {
-    background-color: #ff9800;
-}
-
-.insertion-array-element.insertion-merge {
-    background-color: #6200ea;
-}
-
-.insertion-array-element.insertion-splitting {
-    background-color: #ff9800;
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

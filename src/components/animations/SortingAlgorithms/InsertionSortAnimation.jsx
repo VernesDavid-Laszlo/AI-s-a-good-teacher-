@@ -1,133 +1,98 @@
-import { useEffect, useState } from "react";
-import { gsap } from "gsap";
-import "./InsertionSortAnimation.css"; // Módosított CSS import
+import { useEffect, useState } from 'react';
+import { gsap } from 'gsap';
+import './InsertionSortAnimation.css'; // Make sure to create this CSS file
 
-// Improved Insertion Sort algorithm steps generation
 const insertionSortSteps = (array) => {
     const arr = [...array];
     const steps = [];
+    const sortedIndices = new Set();
 
-    // Mark first element as initially sorted
-    steps.push({ type: "markSorted", index: 0 });
-
+    // Start from the second element (index 1)
     for (let i = 1; i < arr.length; i++) {
+        // Current element to be inserted
         const current = arr[i];
+        steps.push({ type: 'select', index: i, value: current });
+
+        // Compare with elements in the sorted portion
         let j = i - 1;
 
-        // Highlight the current element we're inserting
-        steps.push({ type: "highlight", index: i });
+        // While we haven't reached the start and current element is smaller
+        while (j >= 0) {
+            steps.push({ type: 'compare', indices: [j, i] });
 
-        // Make a copy of the array before modifications
-        const initialArrayState = [...arr];
-
-        // Find the correct position while shifting elements
-        while (j >= 0 && arr[j] > current) {
-            // Compare elements
-            steps.push({ type: "compare", indices: [j, j + 1] });
-
-            // Shift element right
-            arr[j + 1] = arr[j];
-            steps.push({
-                type: "shift",
-                fromIndex: j,
-                toIndex: j + 1,
-                array: [...arr],
-                current: current
-            });
-
-            j--;
+            if (arr[j] > current) {
+                // Move element to the right
+                arr[j + 1] = arr[j];
+                steps.push({ type: 'shift', fromIndex: j, toIndex: j + 1, array: [...arr] });
+                j--;
+            } else {
+                // Found the right position
+                break;
+            }
         }
 
-        // If no shifting occurred, still compare
-        if (j === i - 1) {
-            steps.push({ type: "compare", indices: [j, j + 1] });
-        }
-
-        // Insert the current element at its correct position
+        // Insert the current element at the correct position
         arr[j + 1] = current;
-
-        // Add step to show insertion
-        steps.push({
-            type: "insert",
-            index: j + 1,
-            value: current,
-            array: [...arr]
-        });
-
-        // Mark this position as sorted
-        steps.push({ type: "markSorted", index: j + 1 });
+        steps.push({ type: 'insert', index: j + 1, value: current, array: [...arr] });
     }
 
-    // Mark all elements as sorted when complete
-    steps.push({ type: "complete" });
+    // Check which elements are in their final sorted position
+    const sortedArr = [...array].sort((a, b) => a - b);
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === sortedArr[i]) {
+            steps.push({ type: 'finalPosition', index: i });
+        }
+    }
+
     return steps;
 };
 
-// Component for running the animations
 const InsertionSortAnimation = () => {
-    const [arrayInput, setArrayInput] = useState("3, 2, 5, 9, 1, 8, 4");
+    const [arrayInput, setArrayInput] = useState('3, 2, 5, 9, 1, 8, 4');
     const [currentArray, setCurrentArray] = useState([3, 2, 5, 9, 1, 8, 4]);
     const [steps, setSteps] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [isSorting, setIsSorting] = useState(false);
-    const [sortedIndices, setSortedIndices] = useState([]);
+    const [selectedElement, setSelectedElement] = useState(null);
+    const [sortedIndices, setSortedIndices] = useState(new Set());
 
     const handleArrayChange = () => {
         try {
             const parsedArray = arrayInput
-                .split(",")
+                .split(',')
                 .map((num) => parseInt(num.trim(), 10))
                 .filter((num) => !isNaN(num));
-
-            if (parsedArray.length === 0) {
-                alert("Please enter at least one valid number.");
-                return;
-            }
-
             setCurrentArray(parsedArray);
             setSteps([]);
             setCurrentStep(0);
             setIsSorting(false);
-            setSortedIndices([]);
+            setSelectedElement(null);
+            setSortedIndices(new Set());
 
-            // Reset all elements to default style
-            const elements = document.querySelectorAll(".insertion-array-element");
-            elements.forEach(element => {
-                gsap.to(element, {
-                    backgroundColor: "#3498db",
-                    scale: 1,
-                    y: 0,
-                    duration: 0.3
-                });
+            // Reset all visual states
+            const elements = document.querySelectorAll('.insertion-array-element');
+            elements.forEach(el => {
+                el.classList.remove('insertion-compare', 'insertion-sorted', 'insertion-selected');
             });
         } catch {
-            alert("Invalid input. Please provide a comma-separated list of numbers.");
+            alert('Invalid input. Please provide a comma-separated list of numbers.');
         }
     };
 
     const startSorting = () => {
         if (currentArray.length === 0) {
-            alert("Array is empty.");
+            alert('Array is empty.');
             return;
         }
 
-        // Reset visual state
-        setSortedIndices([]);
-
-        // Reset all elements to default style
-        const elements = document.querySelectorAll(".insertion-array-element");
-        elements.forEach(element => {
-            gsap.to(element, {
-                backgroundColor: "#3498db",
-                scale: 1,
-                y: 0,
-                duration: 0.3
-            });
+        // Reset visual states
+        const elements = document.querySelectorAll('.insertion-array-element');
+        elements.forEach(el => {
+            el.classList.remove('insertion-compare', 'insertion-sorted', 'insertion-selected');
         });
 
-        // Generate steps and start animation
-        const generatedSteps = insertionSortSteps([...currentArray]);
-        setSteps(generatedSteps);
+        setSortedIndices(new Set());
+        setSteps(insertionSortSteps(currentArray));
         setIsSorting(true);
         setCurrentStep(0);
     };
@@ -136,215 +101,247 @@ const InsertionSortAnimation = () => {
         if (!isSorting || currentStep >= steps.length) {
             if (currentStep >= steps.length && steps.length > 0) {
                 setIsSorting(false);
+
+                // After sorting is complete, check which elements are in their final position
+                const sortedArr = [...currentArray].sort((a, b) => a - b);
+                const newSortedIndices = new Set();
+
+                currentArray.forEach((value, index) => {
+                    if (value === sortedArr[index]) {
+                        newSortedIndices.add(index);
+                    }
+                });
+
+                setSortedIndices(newSortedIndices);
+
+                // Mark elements in final position as sorted
+                const elements = document.querySelectorAll('.insertion-array-element');
+                elements.forEach((el, idx) => {
+                    if (newSortedIndices.has(idx)) {
+                        el.classList.add('insertion-sorted');
+                    } else {
+                        el.classList.remove('insertion-sorted');
+                    }
+                });
             }
             return;
         }
 
         const step = steps[currentStep];
 
-        switch (step.type) {
-            case "highlight":
-                highlightElement(step.index);
-                break;
-            case "compare":
-                compareElements(step.indices);
-                break;
-            case "shift":
-                shiftElement(step.fromIndex, step.toIndex, step.array, step.current);
-                break;
-            case "insert":
-                insertElement(step.index, step.value, step.array);
-                break;
-            case "markSorted":
-                markAsSorted(step.index);
-                break;
-            case "complete":
-                markAllAsSorted();
-                break;
-            default:
-                break;
+        if (step.type === 'select') {
+            selectElement(step.index);
+            setSelectedElement(step.value);
+        } else if (step.type === 'compare') {
+            highlightCompare(step.indices);
+        } else if (step.type === 'shift') {
+            shiftElement(step.fromIndex, step.toIndex, step.array);
+        } else if (step.type === 'insert') {
+            insertElement(step.index, step.value, step.array);
+        } else if (step.type === 'finalPosition') {
+            markAsFinalPosition(step.index);
         }
 
         const timeout = setTimeout(() => {
             setCurrentStep((prev) => prev + 1);
-        }, 800); // Speed adjusted for better visualization
+        }, 1000); // Each step takes 1 second
 
         return () => clearTimeout(timeout);
-    }, [isSorting, currentStep, steps]);
+    }, [isSorting, currentStep, steps, currentArray]);
 
-    // Highlight the current element being processed
-    const highlightElement = (index) => {
-        const elements = document.querySelectorAll(".insertion-array-element");
-        if (elements[index]) {
-            // Reset other elements that aren't sorted
-            elements.forEach((el, idx) => {
-                if (!sortedIndices.includes(idx) && idx !== index) {
-                    gsap.to(el, {
-                        backgroundColor: "#ff9800",
-                        scale: 1,
-                        duration: 0.3
-                    });
-                }
-            });
-
-            // Highlight the selected element
-            gsap.to(elements[index], {
-                backgroundColor: "#ff9800",
-                scale: 1.1,
-                y: -20,
-                duration: 0.5
-            });
-        }
+    const selectElement = (index) => {
+        const elements = document.querySelectorAll('.insertion-array-element');
+        elements.forEach((el, idx) => {
+            if (idx === index) {
+                el.classList.add('insertion-selected');
+            } else {
+                el.classList.remove('insertion-selected');
+            }
+        });
     };
 
-    // Compare two elements
-    const compareElements = (indices) => {
-        const elements = document.querySelectorAll(".insertion-array-element");
-        const [first, second] = indices;
+    const highlightCompare = (indices) => {
+        const elements = document.querySelectorAll('.insertion-array-element');
+        elements.forEach((el, idx) => {
+            if (indices.includes(idx)) {
+                el.classList.add('insertion-compare');
+            } else if (!el.classList.contains('insertion-sorted') && !el.classList.contains('insertion-selected')) {
+                el.classList.remove('insertion-compare');
+            }
+        });
+    };
 
-        if (elements[first] && elements[second]) {
-            // Highlight the comparison
-            gsap.to(elements[first], {
-                backgroundColor: "#e74c3c",
-                duration: 0.3
-            });
+    const shiftElement = (fromIndex, toIndex, newArray) => {
+        const elements = document.querySelectorAll('.insertion-array-element');
 
-            if (!sortedIndices.includes(second)) {
-                gsap.to(elements[second], {
-                    backgroundColor: "#ff9800",
-                    duration: 0.3
+        // Animate the shift
+        gsap.to(elements[fromIndex], {
+            y: -30,
+            duration: 0.3,
+            onComplete: () => {
+                gsap.to(elements[fromIndex], {
+                    x: 50,
+                    duration: 0.3,
+                    onComplete: () => {
+                        setCurrentArray(newArray);
+                        gsap.to(elements[fromIndex], { y: 0, x: 0, duration: 0.3 });
+                    }
                 });
             }
-        }
+        });
     };
 
-    // Shift elements to make room for insertion
-    const shiftElement = (fromIndex, toIndex, newArray, current) => {
-        setCurrentArray(newArray);
-
-        const elements = document.querySelectorAll(".insertion-array-element");
-        if (elements[fromIndex] && elements[toIndex]) {
-            // Visual indication of shift
-            gsap.to(elements[fromIndex], {
-                x: 60,
-                duration: 0.3,
-                onComplete: () => {
-                    gsap.to(elements[fromIndex], {
-                        x: 0,
-                        duration: 0.1
-                    });
-                }
-            });
-        }
-    };
-
-    // Insert element at the correct position
     const insertElement = (index, value, newArray) => {
         setCurrentArray(newArray);
 
-        const elements = document.querySelectorAll(".insertion-array-element");
+        // Highlight the inserted element
+        setTimeout(() => {
+            const elements = document.querySelectorAll('.insertion-array-element');
+            if (elements[index]) {
+                elements[index].classList.add('insertion-inserted');
+
+                // Remove the inserted highlight after a brief period
+                setTimeout(() => {
+                    elements[index].classList.remove('insertion-inserted');
+                }, 500);
+            }
+        }, 100);
+    };
+
+    const markAsFinalPosition = (index) => {
+        const elements = document.querySelectorAll('.insertion-array-element');
         if (elements[index]) {
-            // Highlight the insertion
-            gsap.to(elements[index], {
-                backgroundColor: "#9b59b6",
-                scale: 1.1,
-                duration: 0.4,
-                onComplete: () => {
-                    // Reset scale but keep color if sorted
-                    gsap.to(elements[index], {
-                        scale: 1,
-                        y: 0,
-                        duration: 0.2
-                    });
-                }
-            });
+            // Create a new set with the existing sorted indices plus the new one
+            const newSortedIndices = new Set(sortedIndices);
+            newSortedIndices.add(index);
+            setSortedIndices(newSortedIndices);
+
+            elements[index].classList.add('insertion-sorted');
         }
     };
 
-    // Mark an element as sorted
-    const markAsSorted = (index) => {
-        setSortedIndices(prev => [...prev, index]);
-
-        const elements = document.querySelectorAll(".insertion-array-element");
-        if (elements[index]) {
-            gsap.to(elements[index], {
-                backgroundColor: "#4caf50",
-                duration: 0.5
-            });
-        }
-    };
-
-    // Mark all elements as sorted
-    const markAllAsSorted = () => {
-        const elements = document.querySelectorAll(".insertion-array-element");
-        elements.forEach((element) => {
-            gsap.to(element, {
-                backgroundColor: "#4caf50",
-                scale: 1,
-                y: 0,
-                duration: 0.5
-            });
-        });
-
-        setSortedIndices([...Array(currentArray.length).keys()]);
+    // Check if an element is in its final sorted position for rendering
+    const isInFinalPosition = (index) => {
+        // Only for rendering - check if the current element at this index is in the correct sorted position
+        const sortedArr = [...currentArray].sort((a, b) => a - b);
+        return currentArray[index] === sortedArr[index];
     };
 
     return (
         <div className="insertion-sort-container">
-            <div style={{ marginBottom: "20px" }}>
-                <input
-                    type="text"
-                    value={arrayInput}
-                    onChange={(e) => setArrayInput(e.target.value)}
-                    placeholder="Enter comma-separated numbers"
-                    style={{ padding: "10px", width: "300px", fontSize: "16px" }}
-                />
-                <button
-                    onClick={handleArrayChange}
-                    style={{
-                        marginLeft: "10px",
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        backgroundColor: "#6200ea",
-                        color: "#fff",
-                        border: "none",
-                        cursor: "pointer",
-                    }}
-                >
-                    Set Array
-                </button>
-
-            </div>
-            <br/>
-            <div className="insertion-array-container">
-                {currentArray.map((value, index) => (
-                    <div
-                        key={index}
-                        className="insertion-array-element"
-                        style={{
-                            backgroundColor: sortedIndices.includes(index) ? "#4caf50" : "#3498db"
-                        }}
-                    >
-                        {value}
+            <div style={{
+                fontSize: "16px",
+                color: "#333",
+                textAlign: "left",
+                maxWidth: "1000px",
+                margin: "0px auto 20px",
+                padding: "25px",
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                fontFamily: "Arial"
+            }}>
+                <p>This animation demonstrates the insertion sort algorithm in action. Insertion sort builds the final sorted array one item at a time, similar to how you might sort a hand of playing cards.</p>
+                <p><strong>How the algorithm works:</strong></p>
+                <ol style={{textAlign: "left"}}>
+                    <li>We start with the first element as already in the sorted portion</li>
+                    <li>For each unsorted element (highlighted in purple), we:</li>
+                    <li>Compare it with elements in the sorted portion (highlighted in yellow)</li>
+                    <li>Shift larger elements to the right to make space for the current element</li>
+                    <li>Insert the current element into its correct position</li>
+                    <li>Elements in their final sorted positions are marked in green</li>
+                </ol>
+                <p><strong>Time Complexity:</strong> O(n²) in the worst case, but performs better on partially sorted arrays</p>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "15px",
+                    marginTop: "30px",
+                    flexWrap: "wrap"
+                }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "#6200ea",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Unsorted element</span>
                     </div>
-                ))}
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "purple",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Selected element</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "yellow",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Being compared</span>
+                    </div>
+                    <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
+                        <div style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: "green",
+                            borderRadius: "3px"
+                        }}></div>
+                        <span>Sorted element in final position</span>
+                    </div>
+                </div>
             </div>
 
-            <button
-                onClick={startSorting}
-                style={{
-                    marginTop: "20px",
-                    padding: "10px 20px",
-                    fontSize: "16px",
-                    backgroundColor: "#6200ea",
-                    color: "#fff",
-                    border: "none",
-                    cursor: "pointer",
-                }}
-                disabled={isSorting}
-            >
-                Start Sorting
-            </button>
+            <div className="insertion-controls">
+                <div className="insertion-input-container">
+                    <input
+                        type="text"
+                        value={arrayInput}
+                        onChange={(e) => setArrayInput(e.target.value)}
+                        placeholder="Enter comma-separated numbers"
+                        className="insertion-input"
+                    />
+                    <button
+                        onClick={handleArrayChange}
+                        className="insertion-button"
+                    >
+                        Set Array
+                    </button>
+                </div>
+
+                <div className="insertion-array-container">
+                    {currentArray.map((value, index) => (
+                        <div
+                            key={index}
+                            className={`insertion-array-element ${sortedIndices.has(index) ? 'insertion-sorted' : ''}`}
+                        >
+                            {value}
+                        </div>
+                    ))}
+                </div>
+
+                {selectedElement !== null && (
+                    <div className="insertion-current-element">
+                        <div>Current element: {selectedElement}</div>
+                    </div>
+                )}
+
+                <div className="insertion-button-container">
+                    <button
+                        onClick={startSorting}
+                        className="insertion-button"
+                        disabled={isSorting}
+                    >
+                        Start Sorting
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

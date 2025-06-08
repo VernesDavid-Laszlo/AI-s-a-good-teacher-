@@ -5,6 +5,10 @@ import { FaTimesCircle, FaCheckCircle } from "react-icons/fa";
 import Header from '../components/Header';
 import "../styles/Admin.css";
 
+// ÚJ: importáljuk a tesztfeltöltéshez szükséges dolgokat
+import { uploadTestsToChapter } from "../utils/uploadDefaultTests";
+import { defaultTests } from "../data/defaultTests";
+
 function Admin() {
     const [users, setUsers] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -58,42 +62,67 @@ function Admin() {
         }
     };
 
+    // ÚJ: kezelőfüggvény a tesztfeltöltés gombhoz
+    const handleUploadTests = async () => {
+        try {
+            await uploadTestsToChapter("searchingAlgorithms", "binarySearch", defaultTests.binarySearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "binarySearchTree", defaultTests.binarySearchTreeTests);
+            await uploadTestsToChapter("searchingAlgorithms", "fibonacciSearch", defaultTests.fibonacciSearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "intervalSearch", defaultTests.intervalSearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "linearSearch", defaultTests.linearSearchTests);
+            alert("✅ Összes teszt feltöltve!");
+        } catch (error) {
+            console.error("Hiba a tesztek feltöltése során:", error);
+            alert("Hiba történt a tesztek feltöltése során!");
+        }
+    };
+
     return (
         <div className="admin-page">
             <div className="admin-background">
                 <Header />
                 <main className="admin-container container">
                     {isAdmin ? (
-                        <div className="users-container">
-                            <h1>Felhasználók listája</h1>
-                            <br />
-                            {users.length > 0 ? (
-                                <ul>
-                                    {users.map(user => (
-                                        <li key={user.id} className="user-row">
-                                            <div className="user-info">
-                                                <span className="user-name">{user.username} </span>
-                                                <span className="user-email">: {user.email} ,</span>
-                                                <span className="user-role">
-                                                    {user.role === 2 ? "Student" : user.role === 1 ? "Teacher" : "Unknown"}
-                                                </span>
-                                                {user.role === 1 && !user.approved && (
-                                                    <span className="pending-approval"> (Pending...) </span>
-                                                )}
-                                            </div>
-                                            <div className="user-icons">
-                                                {user.role === 1 && !user.approved && (
-                                                    <FaCheckCircle className="icon green" onClick={() => handleApproveTeacher(user.id)} />
-                                                )}
-                                                <FaTimesCircle className="icon red" onClick={() => handleDeleteUser(user.id)} />
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p>Nincsenek felhasználók.</p>
-                            )}
-                        </div>
+                        <>
+                            <div className="users-container">
+                                <h1>Felhasználók listája</h1>
+                                <br />
+                                {users.length > 0 ? (
+                                    <ul>
+                                        {users.map(user => (
+                                            <li key={user.id} className="user-row">
+                                                <div className="user-info">
+                                                    <span className="user-name">{user.username} </span>
+                                                    <span className="user-email">: {user.email} ,</span>
+                                                    <span className="user-role">
+                                                        {user.role === 2 ? "Student" : user.role === 1 ? "Teacher" : "Unknown"}
+                                                    </span>
+                                                    {user.role === 1 && !user.approved && (
+                                                        <span className="pending-approval"> (Pending...) </span>
+                                                    )}
+                                                </div>
+                                                <div className="user-icons">
+                                                    {user.role === 1 && !user.approved && (
+                                                        <FaCheckCircle className="icon green" onClick={() => handleApproveTeacher(user.id)} />
+                                                    )}
+                                                    <FaTimesCircle className="icon red" onClick={() => handleDeleteUser(user.id)} />
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p>Nincsenek felhasználók.</p>
+                                )}
+                            </div>
+
+                            {/* ÚJ rész: tesztfeltöltés gomb */}
+                            <div style={{ marginTop: "40px", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
+                                <h2>📋 Tesztfeltöltés</h2>
+                                <button onClick={handleUploadTests} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
+                                    Upload Default Tests
+                                </button>
+                            </div>
+                        </>
                     ) : (
                         <p>Nincs jogosultságod az adatok megtekintésére.</p>
                     )}
