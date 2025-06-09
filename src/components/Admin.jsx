@@ -5,9 +5,10 @@ import { FaTimesCircle, FaCheckCircle } from "react-icons/fa";
 import Header from '../components/Header';
 import "../styles/Admin.css";
 
-// ÚJ: importáljuk a tesztfeltöltéshez szükséges dolgokat
 import { uploadTestsToChapter } from "../utils/uploadDefaultTests";
-import { defaultTests } from "../data/defaultTests";
+import { searchingAlgorithmsTests } from "../data/searchingAlgorithmsTests.js";
+import { sortingAlgorithmsTests } from "../data/sortingAlgorithmsTests.js";
+
 
 function Admin() {
     const [users, setUsers] = useState([]);
@@ -65,17 +66,32 @@ function Admin() {
     // ÚJ: kezelőfüggvény a tesztfeltöltés gombhoz
     const handleUploadTests = async () => {
         try {
-            await uploadTestsToChapter("searchingAlgorithms", "binarySearch", defaultTests.binarySearchTests);
-            await uploadTestsToChapter("searchingAlgorithms", "binarySearchTree", defaultTests.binarySearchTreeTests);
-            await uploadTestsToChapter("searchingAlgorithms", "fibonacciSearch", defaultTests.fibonacciSearchTests);
-            await uploadTestsToChapter("searchingAlgorithms", "intervalSearch", defaultTests.intervalSearchTests);
-            await uploadTestsToChapter("searchingAlgorithms", "linearSearch", defaultTests.linearSearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "binarySearch", searchingAlgorithmsTests.binarySearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "binarySearchTree", searchingAlgorithmsTests.binarySearchTreeTests);
+            await uploadTestsToChapter("searchingAlgorithms", "fibonacciSearch", searchingAlgorithmsTests.fibonacciSearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "intervalSearch", searchingAlgorithmsTests.intervalSearchTests);
+            await uploadTestsToChapter("searchingAlgorithms", "linearSearch", searchingAlgorithmsTests.linearSearchTests);
             alert("✅ Összes teszt feltöltve!");
         } catch (error) {
             console.error("Hiba a tesztek feltöltése során:", error);
             alert("Hiba történt a tesztek feltöltése során!");
         }
     };
+
+    const handleUploadSortingTests = async () => {
+        try {
+            await uploadTestsToChapter("sortingAlgorithms", "bubbleSort", sortingAlgorithmsTests.bubbleSortTests);
+            await uploadTestsToChapter("sortingAlgorithms", "insertionSort", sortingAlgorithmsTests.insertionSortTests);
+            await uploadTestsToChapter("sortingAlgorithms", "mergeSort", sortingAlgorithmsTests.mergeSortTests);
+            await uploadTestsToChapter("sortingAlgorithms", "quickSort", sortingAlgorithmsTests.quickSortTests);
+            await uploadTestsToChapter("sortingAlgorithms", "selectionSort", sortingAlgorithmsTests.selectionSortTests);
+            alert("✅ Összes Sorting Algorithm teszt feltöltve!");
+        } catch (error) {
+            console.error("Hiba a Sorting tesztek feltöltése során:", error);
+            alert("Hiba történt a Sorting tesztek feltöltése során!");
+        }
+    };
+
 
     return (
         <div className="admin-page">
@@ -116,11 +132,24 @@ function Admin() {
                             </div>
 
                             {/* ÚJ rész: tesztfeltöltés gomb */}
-                            <div style={{ marginTop: "40px", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-                                <h2>📋 Tesztfeltöltés</h2>
-                                <button onClick={handleUploadTests} style={{ padding: "10px 20px", fontSize: "16px", cursor: "pointer" }}>
-                                    Upload Default Tests
+                            <div style={{
+                                marginTop: "40px",
+                                padding: "20px",
+                                border: "1px solid #ccc",
+                                borderRadius: "8px"
+                            }}>
+                                <h2>📋 Upload tests</h2>
+                                <button onClick={handleUploadTests}
+                                        style={{padding: "10px 20px", fontSize: "16px", cursor: "pointer"}}>
+                                    Upload Searching Algorithms Tests
                                 </button>
+                                <br/>
+                                <br/>
+                                <button onClick={handleUploadSortingTests}
+                                        style={{padding: "10px 20px", fontSize: "16px", cursor: "pointer"}}>
+                                    Upload Sorting Algorithms Tests
+                                </button>
+
                             </div>
                         </>
                     ) : (

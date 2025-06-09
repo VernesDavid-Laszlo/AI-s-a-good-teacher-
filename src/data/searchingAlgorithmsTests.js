@@ -1,4 +1,4 @@
-export const defaultTests = {
+export const searchingAlgorithmsTests = {
     binarySearchTests: [
         {
             title: "Binary Search Quiz 1 (Easy)",
