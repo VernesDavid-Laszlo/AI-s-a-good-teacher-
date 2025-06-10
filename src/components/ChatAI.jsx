@@ -9,6 +9,7 @@ function ChatAI({ onToggle }) {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [headerHeight, setHeaderHeight] = useState(80); // alapértelmezett 80px
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const headerElement = document.querySelector('.header');
@@ -24,10 +25,47 @@ function ChatAI({ onToggle }) {
         }
     };
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (inputValue.trim() === '') return;
-        setMessages([...messages, { sender: 'user', text: inputValue }]);
+
+        // Felhasználó üzenete hozzáadása
+        const newMessages = [...messages, { sender: 'user', text: inputValue }];
+        setMessages(newMessages);
         setInputValue('');
+        setLoading(true);
+
+        try {
+            // API hívás az OpenAI GPT-3.5 turbo-hoz
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer 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"
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        { role: "system", content: "You are a helpful AI assistant who only answers questions about sorting and searching algorithms. Please do not assist with tests or grading." },
+                        ...newMessages.map((msg) => ({
+                            role: msg.sender === 'user' ? 'user' : 'assistant',
+                            content: msg.text
+                        }))
+                    ]
+                })
+            });
+
+            const data = await response.json();
+            const reply = data.choices?.[0]?.message?.content;
+
+            if (reply) {
+                // AI válasz hozzáadása
+                setMessages([...newMessages, { sender: 'ai', text: reply }]);
+            }
+        } catch (error) {
+            console.error("API error:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleKeyPress = (e) => {
@@ -70,6 +108,11 @@ function ChatAI({ onToggle }) {
                                 {msg.text}
                             </div>
                         ))}
+                        {loading && (
+                            <div className="chat-message receiver">
+                                answering...
+                            </div>
+                        )}
                     </div>
 
                     <div className="chat-ai-input p-2 d-flex">
@@ -80,8 +123,11 @@ function ChatAI({ onToggle }) {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyPress={handleKeyPress}
+                            disabled={loading}
                         />
-                        <button className="btn btn-primary" onClick={handleSend}>Send</button>
+                        <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
+                            Send
+                        </button>
                     </div>
                 </div>
             )}
