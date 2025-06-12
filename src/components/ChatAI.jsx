@@ -3,13 +3,21 @@ import '../styles/ChatAI.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaTimes } from 'react-icons/fa';
 import { FaChevronLeft } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 
-function ChatAI({ onToggle }) {
+function ChatAI({ onToggle, mode = 'individual', currentQuestionText = '', aiHelpCount = 0, onAIResponse }) {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
-    const [headerHeight, setHeaderHeight] = useState(80); // alapértelmezett 80px
+    const [headerHeight, setHeaderHeight] = useState(80);
     const [loading, setLoading] = useState(false);
+    const [limitReached, setLimitReached] = useState(false);
+
+    const [currentQuestionTextState, setCurrentQuestionTextState] = useState(currentQuestionText);
+
+    useEffect(() => {
+        setCurrentQuestionTextState(currentQuestionText);
+    }, [currentQuestionText]);
 
     useEffect(() => {
         const headerElement = document.querySelector('.header');
@@ -18,24 +26,41 @@ function ChatAI({ onToggle }) {
         }
     }, []);
 
+    useEffect(() => {
+        // ha kívülről már elértük a limitet → letiltjuk AI választ
+        if (aiHelpCount >= 3) {
+            setLimitReached(true);
+        }
+    }, [aiHelpCount]);
+
     const toggleChat = (open) => {
         setIsOpen(open);
         if (onToggle) {
-            onToggle(open); // értesítjük a TestPage-et hogy nyitva van-e a chat
+            onToggle(open);
         }
     };
 
     const handleSend = async () => {
         if (inputValue.trim() === '') return;
 
-        // Felhasználó üzenete hozzáadása
-        const newMessages = [...messages, { sender: 'user', text: inputValue }];
+        const userMessageContent = (inputValue.trim().toLowerCase() === 'answer this question' && mode === 'test')
+            ? `Please answer the following question: "${currentQuestionTextState}"`
+            : inputValue;
+
+        if (mode === 'test') {
+            if (limitReached) {
+                setMessages(prev => [...prev, { sender: 'ai', text: 'Sorry, you reached your limit for this test.' }]);
+                setInputValue('');
+                return;
+            }
+        }
+
+        const newMessages = [...messages, { sender: 'user', text: userMessageContent }];
         setMessages(newMessages);
         setInputValue('');
         setLoading(true);
 
         try {
-            // API hívás az OpenAI GPT-3.5 turbo-hoz
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
                 headers: {
@@ -45,7 +70,12 @@ function ChatAI({ onToggle }) {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [
-                        { role: "system", content: "You are a helpful AI assistant who only answers questions about sorting and searching algorithms. Please do not assist with tests or grading." },
+                        {
+                            role: "system",
+                            content: mode === 'test'
+                                ? `You are a helpful AI assistant helping the user with this test. The user is currently at the following question: "${currentQuestionTextState}". You may help with at most 3 questions. If the user asks more, remind them that the limit is reached.`
+                                : "You are a helpful AI assistant who only answers questions about sorting and searching algorithms. Please do not assist with tests or grading."
+                        },
                         ...newMessages.map((msg) => ({
                             role: msg.sender === 'user' ? 'user' : 'assistant',
                             content: msg.text
@@ -58,8 +88,12 @@ function ChatAI({ onToggle }) {
             const reply = data.choices?.[0]?.message?.content;
 
             if (reply) {
-                // AI válasz hozzáadása
                 setMessages([...newMessages, { sender: 'ai', text: reply }]);
+
+                // Jelzünk a TestPage-nek, hogy egy új AI válasz történt
+                if (onAIResponse) {
+                    onAIResponse();
+                }
             }
         } catch (error) {
             console.error("API error:", error);
@@ -134,5 +168,13 @@ function ChatAI({ onToggle }) {
         </div>
     );
 }
+
+ChatAI.propTypes = {
+    onToggle: PropTypes.func,
+    mode: PropTypes.string,
+    currentQuestionText: PropTypes.string,
+    aiHelpCount: PropTypes.number,
+    onAIResponse: PropTypes.func
+};
 
 export default ChatAI;

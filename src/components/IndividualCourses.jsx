@@ -48,6 +48,8 @@ const IndividualCourses = () => {
     const [userRole, setUserRole] = useState(null);
     const navigate = useNavigate();
     const { id: courseId } = useParams();
+    const [completedTests, setCompletedTests] = useState([]);
+
 
 
     useEffect(() => {
@@ -63,6 +65,29 @@ const IndividualCourses = () => {
 
         fetchUserRole();
     }, [user]);
+
+    useEffect(() => {
+        const fetchCompletedTests = async () => {
+            if (!user) return;
+
+            const testsRef = collection(db, "users", user.uid, "tests");
+            const testsSnap = await getDocs(testsRef);
+
+            const completed = testsSnap.docs.map(docSnap => {
+                const data = docSnap.data();
+                return {
+                    courseId: data.courseId,
+                    chapterId: data.chapterId,
+                    testIndex: data.testIndex
+                };
+            });
+
+            setCompletedTests(completed);
+        };
+
+        fetchCompletedTests();
+    }, [user]);
+
 
     useEffect(() => {
         Modal.setAppElement('#root');
@@ -183,6 +208,13 @@ const IndividualCourses = () => {
         setIsUploadModalOpen(false);
     };
 
+    const isTestCompleted = (chapterId, testIndex) => {
+        return completedTests.some(test =>
+            test.courseId === courseId &&
+            test.chapterId === chapterId &&
+            test.testIndex === testIndex
+        );
+    };
 
 
     return (
@@ -320,33 +352,60 @@ const IndividualCourses = () => {
                                     {expandedSections[chapter.id]?.tests && (
                                         <div className="section-content">
                                             {chapter.tests && chapter.tests.length > 0 ? (
-                                                chapter.tests.map((test, index) => (
-                                                    <div
-                                                        key={index}
-                                                        onClick={() => navigate(`/courses/${courseId}/${chapter.id}/test/${index}`)}
-                                                        style={{
-                                                            border: "1px solid #ccc",
-                                                            borderRadius: "8px",
-                                                            padding: "16px",
-                                                            margin: "10px 0",
-                                                            cursor: "pointer",
-                                                            backgroundColor: "#9e76d7",
-                                                            transition: "background-color 0.2s ease",
-                                                        }}
-                                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#CBC3E3"}
-                                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#9e76d7"}
-                                                    >
-                                                        <h4>{test.title || `Test ${index + 1}`}</h4>
-                                                    </div>
-                                                ))
+                                                chapter.tests.map((test, index) => {
+                                                    const completed = isTestCompleted(chapter.id, index);
+
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            onClick={() => {
+                                                                if (!completed) {
+                                                                    navigate(`/courses/${courseId}/${chapter.id}/test/${index}`);
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                border: "1px solid #ccc",
+                                                                borderRadius: "8px",
+                                                                padding: "16px",
+                                                                margin: "10px 0",
+                                                                cursor: completed ? "not-allowed" : "pointer",
+                                                                backgroundColor: completed ? "#d3d3d3" : "#9e76d7",
+                                                                color: completed ? "#666" : "#000",
+                                                                display: "flex",
+                                                                justifyContent: "space-between",
+                                                                alignItems: "center",
+                                                                transition: "background-color 0.2s ease",
+                                                            }}
+                                                            onMouseOver={(e) => {
+                                                                if (!completed) {
+                                                                    e.currentTarget.style.backgroundColor = "#CBC3E3";
+                                                                }
+                                                            }}
+                                                            onMouseOut={(e) => {
+                                                                if (!completed) {
+                                                                    e.currentTarget.style.backgroundColor = "#9e76d7";
+                                                                }
+                                                            }}
+                                                        >
+                                                            <h4 style={{margin: 0}}>{test.title || `Test ${index + 1}`}</h4>
+                                                            {completed && (
+                                                                <span style={{
+                                                                    fontSize: "20px",
+                                                                    marginLeft: "10px"
+                                                                }}>🔒</span> // lakat ikon (unicode)
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })
                                             ) : (
                                                 <p>Nincsenek tesztek ehhez a fejezethez.</p>
                                             )}
                                         </div>
+
                                     )}
                                 </div>
                                 <ChatPopup/>
-                                <ChatAI/>
+                                <ChatAI mode="individual"/>
                             </div>
                         ))
                     ) : (
@@ -379,7 +438,7 @@ const IndividualCourses = () => {
                         overlayClassName="upload-overlay"
                     >
                         <button onClick={closeUploadLessonModal} className="close-button">✖</button>
-                        <UploadLessons />
+                        <UploadLessons/>
                     </Modal>
 
                 </main>

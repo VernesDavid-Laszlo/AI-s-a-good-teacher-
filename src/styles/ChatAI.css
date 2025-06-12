@@ -75,6 +75,9 @@
     overflow-y: auto;
     background-color: #f9f9f9;
     padding: 10px;
+
+    display: flex; /* EZ a fontos!!! */
+    flex-direction: column; /* hogy az üzenetek oszlopban legyenek */
 }
 
 .chat-message {
@@ -89,13 +92,23 @@
 /* Sender message */
 .sender {
     background-color: #6200ea;
-    align-self: flex-end;
+    color: white;
+    align-self: flex-end; /* jobb oldalra */
+    padding: 10px 15px;
+    border-radius: 15px 15px 0 15px;
+    max-width: 90%;
+    text-align: left;
 }
 
 /* Receiver message */
 .receiver {
     background-color: #f1f0f0;
-    align-self: flex-start;
+    color: black;
+    align-self: flex-start; /* bal oldalra */
+    padding: 10px 15px;
+    border-radius: 15px 15px 15px 0;
+    max-width: 90%;
+    text-align: left;
 }
 
 /* Input */
