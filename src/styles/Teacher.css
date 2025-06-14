@@ -1,0 +1,19 @@
+.teacher-page {
+    background-color: #E8EAF6;
+    width: 100%;
+    height: 100%;
+}
+
+.teacher-background {
+    background-color: #E8EAF6;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding-top: 100px;
+    padding-bottom: 20px;
+    margin: 0;
+}

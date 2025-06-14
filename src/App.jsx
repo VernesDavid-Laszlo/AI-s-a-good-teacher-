@@ -13,7 +13,7 @@ import IndividualCourses from "./components/IndividualCourses.jsx";
 import UploadPage from "./components/UploadePage.jsx";
 import Admin from "./components/Admin.jsx";
 import TestPage from "./components/TestPage.jsx";
-
+import TeacherDashboard from "./components/TeacherDashboard.jsx";
 
 function App() {
     const [user, setUser] = useState(null);
@@ -41,6 +41,7 @@ function App() {
                 <Route path="/home" element={user ? <Home /> : <Navigate replace to="/login" />} />
                 <Route path="/courses" element={user ? <Courses /> : <Navigate replace to="/login" />} />
                 <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate replace to="/login" />} />
+                <Route path="/teacher-dashboard" element={user ? <TeacherDashboard /> : <Navigate replace to="/login" />} />
                 <Route path="/notifications" element={user ? <Notifications /> : <Navigate replace to="/login" />} />
                 <Route path="/profile" element={user ? <Profile /> : <Navigate replace to="/login" />} />
                 <Route path="/course/:id" element={user ? <IndividualCourses /> : <Navigate replace to="/login" />} />

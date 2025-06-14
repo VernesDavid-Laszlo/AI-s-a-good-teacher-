@@ -4,7 +4,10 @@ import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle, faBell, faHome, faBook, faTachometerAlt, faUser, faSignOutAlt, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import {
+    faUserCircle, faBell, faHome, faBook, faTachometerAlt,
+    faUser, faSignOutAlt, faUserShield
+} from '@fortawesome/free-solid-svg-icons';
 import '../styles/Header.css';
 
 function Header() {
@@ -57,33 +60,46 @@ function Header() {
                     <div className="collapse navbar-collapse justify-content-center">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/home" style={{color: 'white'}}>
-                                    <FontAwesomeIcon icon={faHome} className="me-2"/>
+                                <Link className="nav-link" to="/home" style={{ color: 'white' }}>
+                                    <FontAwesomeIcon icon={faHome} className="me-2" />
                                     Home
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/courses" style={{color: 'white'}}>
-                                    <FontAwesomeIcon icon={faBook} className="me-2"/>
+                                <Link className="nav-link" to="/courses" style={{ color: 'white' }}>
+                                    <FontAwesomeIcon icon={faBook} className="me-2" />
                                     Courses
                                 </Link>
                             </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/dashboard" style={{color: 'white'}}>
-                                    <FontAwesomeIcon icon={faTachometerAlt} className="me-2"/>
-                                    Dashboard
-                                </Link>
-                            </li>
+
+                            {(userRole === 2 || userRole === 0) && (
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/dashboard" style={{ color: 'white' }}>
+                                        <FontAwesomeIcon icon={faTachometerAlt} className="me-2" />
+                                        Dashboard
+                                    </Link>
+                                </li>
+                            )}
+
+                            {(userRole === 1 || userRole === 0) && (
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/teacher-dashboard" style={{ color: 'white' }}>
+                                        <FontAwesomeIcon icon={faTachometerAlt} className="me-2" />
+                                        Teacher Dashboard
+                                    </Link>
+                                </li>
+                            )}
+
                             <li className="nav-item dropdown">
-                                <Link className="nav-link" to="/notifications" style={{color: 'white'}}>
-                                    <FontAwesomeIcon icon={faBell} className="me-2"/>
+                                <Link className="nav-link" to="/notifications" style={{ color: 'white' }}>
+                                    <FontAwesomeIcon icon={faBell} className="me-2" />
                                     Notifications
                                 </Link>
                             </li>
                         </ul>
                     </div>
-                    <div className="d-flex align-items-center ms-5 profile-username-container"
-                         style={{marginRight: '70px'}}>
+
+                    <div className="d-flex align-items-center ms-5 profile-username-container" style={{ marginRight: '70px' }}>
                         <div className="dropdown">
                             <a
                                 className="d-flex align-items-center text-white text-decoration-none"
@@ -99,7 +115,12 @@ function Header() {
                                         src={profilePicture}
                                         alt="Profile"
                                         className="rounded-circle"
-                                        style={{ width: '32px', height: '32px', objectFit: 'cover', marginRight: '10px' }}
+                                        style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            objectFit: 'cover',
+                                            marginRight: '10px'
+                                        }}
                                     />
                                 ) : (
                                     <FontAwesomeIcon icon={faUserCircle} size="2x" className="me-2" style={{ color: 'white' }} />
