@@ -1,9 +1,9 @@
-// TeacherDashboard.jsx
-import React, { useEffect, useState } from 'react';
+// TeacherDashboard.jsx (frissített a kéréseid szerint)
+import { useEffect, useState } from 'react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import Header from '../components/Header';
+import Header from './Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Teacher.css';
 import { Bar } from 'react-chartjs-2';
@@ -24,8 +24,11 @@ function TeacherDashboard() {
     const [assignedCourse, setAssignedCourse] = useState('');
     const [studentData, setStudentData] = useState([]);
     const [expandedUser, setExpandedUser] = useState(null);
-    const [showStats, setShowStats] = useState(false);
+    const [expandedTests, setExpandedTests] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [sortMethod, setSortMethod] = useState('');
+    const [showClassStats, setShowClassStats] = useState(false);
+    const [showChart, setShowChart] = useState(false);
 
     useEffect(() => {
         const fetchTeacherInfo = async () => {
@@ -42,20 +45,18 @@ function TeacherDashboard() {
     useEffect(() => {
         const fetchStudentTests = async () => {
             if (!assignedCourse) return;
-
             const usersSnap = await getDocs(collection(db, 'users'));
             const students = [];
-
             for (const userDoc of usersSnap.docs) {
                 const uData = userDoc.data();
                 if (uData.role === 2) {
                     const testsSnap = await getDocs(collection(db, 'users', userDoc.id, 'tests'));
                     const tests = testsSnap.docs
                         .map(t => ({ ...t.data(), id: t.id }))
-                        .filter(t => t.courseId === assignedCourse);
-
+                        .filter(t => (t.courseId || '').toLowerCase() === assignedCourse.toLowerCase());
                     if (tests.length > 0) {
                         students.push({
+                            id: userDoc.id,
                             username: uData.username || uData.email,
                             tests,
                         });
@@ -68,52 +69,72 @@ function TeacherDashboard() {
         fetchStudentTests();
     }, [assignedCourse]);
 
-    const generateStatistics = () => {
+    const sortedStudents = [...studentData].sort((a, b) => {
+        const getAvg = s => s.tests.reduce((sum, t) => sum + (t.totalScore || 0), 0) / s.tests.length;
+        switch (sortMethod) {
+            case 'nameAsc': return a.username.localeCompare(b.username);
+            case 'nameDesc': return b.username.localeCompare(a.username);
+            case 'avgAsc': return getAvg(a) - getAvg(b);
+            case 'avgDesc': return getAvg(b) - getAvg(a);
+            case 'onlyPass': return b.tests.some(t => t.grade !== 'Fail') ? -1 : 1;
+            default: return 0;
+        }
+    });
+
+    const classStats = () => {
         const allTests = studentData.flatMap(s => s.tests);
-        const totalScores = allTests.map(t => t.totalScore);
-        const avgScore = (totalScores.reduce((a, b) => a + b, 0) / totalScores.length).toFixed(1);
+        const avgPerStudent = studentData.map(s => {
+            const total = s.tests.reduce((sum, t) => sum + (t.totalScore || 0), 0);
+            return { name: s.username, avg: (total / s.tests.length).toFixed(2) };
+        });
 
-        const aiUsedCount = allTests.flatMap(t => t.questions).filter(q => q.aiHelpUsed).length;
-        const totalQuestions = allTests.reduce((acc, t) => acc + t.questions.length, 0);
-
-        const errorCounts = {};
+        const aiHelpUsagePerTest = {};
         allTests.forEach(t => {
-            t.questions.forEach(q => {
-                if (q.correctAnswerIndex !== q.selectedAnswerIndex) {
-                    errorCounts[q.questionText] = (errorCounts[q.questionText] || 0) + 1;
-                }
+            aiHelpUsagePerTest[t.title] = aiHelpUsagePerTest[t.title] || 0;
+            t.questions?.forEach(q => {
+                if (q.aiHelpUsed) aiHelpUsagePerTest[t.title]++;
             });
         });
 
-        const sortedErrors = Object.entries(errorCounts).sort((a, b) => b[1] - a[1]);
+        const aiHelpQuestions = {};
+        allTests.forEach(t => {
+            t.questions?.forEach(q => {
+                if (q.aiHelpUsed) aiHelpQuestions[q.questionText] = (aiHelpQuestions[q.questionText] || 0) + 1;
+            });
+        });
 
         return (
             <div className="mt-5">
-                <h4>Statisztikák</h4>
-                <p>Átlagos pontszám: {avgScore}</p>
-                <p>AI segítség használata: {aiUsedCount} / {totalQuestions} ({((aiUsedCount / totalQuestions) * 100).toFixed(1)}%)</p>
-
-                <div className="my-4">
-                    <Bar
-                        data={{
-                            labels: sortedErrors.map(e => e[0]),
-                            datasets: [
-                                {
-                                    label: 'Hibás válaszok száma kérdésenként',
-                                    data: sortedErrors.map(e => e[1]),
-                                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                                },
-                            ],
-                        }}
-                        options={{
-                            plugins: {
-                                title: { display: true, text: 'Leggyakrabban elrontott kérdések' },
-                            },
-                            responsive: true,
-                            indexAxis: 'y',
-                        }}
-                    />
-                </div>
+                <h4>Osztálystatisztikák</h4>
+                <table className="table table-bordered">
+                    <thead><tr><th>Diák</th><th>Átlag</th></tr></thead>
+                    <tbody>
+                    {avgPerStudent.map((s, i) => (
+                        <tr key={i}><td>{s.name}</td><td>{s.avg}</td></tr>
+                    ))}
+                    </tbody>
+                </table>
+                <button className="btn btn-secondary mt-3" onClick={() => setShowChart(!showChart)}>
+                    {showChart ? 'Diagram elrejtése' : 'Diagram megjelenítése'}
+                </button>
+                {showChart && (
+                    <div className="mt-4">
+                        <Bar data={{
+                            labels: Object.keys(aiHelpUsagePerTest),
+                            datasets: [{
+                                label: 'AI segítségek száma tesztenként',
+                                data: Object.values(aiHelpUsagePerTest),
+                            }]
+                        }}/>
+                        <Bar className="mt-5" data={{
+                            labels: Object.keys(aiHelpQuestions),
+                            datasets: [{
+                                label: 'AI segítség kérdésenként',
+                                data: Object.values(aiHelpQuestions),
+                            }]
+                        }}/>
+                    </div>
+                )}
             </div>
         );
     };
@@ -126,58 +147,82 @@ function TeacherDashboard() {
                     <h1 className="mb-4">Tanári Dashboard ({assignedCourse})</h1>
                     {loading ? <p>Betöltés...</p> : (
                         <>
-                            <div className="list-group">
-                                {studentData.map((student, idx) => (
-                                    <div key={idx} className="mb-3">
+                            <div className="mb-3">
+                                <select onChange={e => setSortMethod(e.target.value)} className="form-select w-auto">
+                                    <option value="">Sorrend választása</option>
+                                    <option value="nameAsc">Név szerint A-Z</option>
+                                    <option value="nameDesc">Név szerint Z-A</option>
+                                    <option value="avgAsc">Átlag szerint növekvő</option>
+                                    <option value="avgDesc">Átlag szerint csökkenő</option>
+                                    <option value="onlyPass">Csak átmentek</option>
+                                </select>
+                            </div>
+
+                            {sortedStudents.map((s, i) => {
+                                const avg = (s.tests.reduce((a, b) => a + (b.totalScore || 0), 0) / s.tests.length).toFixed(2);
+                                return (
+                                    <div key={i} className="mb-2">
                                         <button
-                                            className="btn btn-outline-dark w-100 text-start"
-                                            onClick={() => setExpandedUser(expandedUser === idx ? null : idx)}
+                                            className="btn btn-outline-primary w-100 text-start"
+                                            onClick={() => setExpandedUser(expandedUser === i ? null : i)}
                                         >
-                                            {student.username}
+                                            {s.username} – Átlag: {avg}
                                         </button>
-                                        {expandedUser === idx && (
+
+                                        {expandedUser === i && (
                                             <div className="mt-2">
-                                                {student.tests.map((test, i) => (
-                                                    <div key={i} className="card mt-3">
-                                                        <div className="card-body">
-                                                            <h5>{test.title} – {test.grade} ({test.totalScore} pont)</h5>
-                                                            <table className="table table-sm mt-2">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>#</th>
-                                                                    <th>Kérdés</th>
-                                                                    <th>Válasz</th>
-                                                                    <th>Helyes</th>
-                                                                    <th>Pont</th>
-                                                                    <th>AI</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                {test.questions.map((q, qi) => (
-                                                                    <tr key={qi}>
-                                                                        <td>{qi + 1}</td>
-                                                                        <td>{q.questionText}</td>
-                                                                        <td>{q.answers?.[q.selectedAnswerIndex]}</td>
-                                                                        <td>{q.answers?.[q.correctAnswerIndex]}</td>
-                                                                        <td>{q.scoreGiven}</td>
-                                                                        <td>{q.aiHelpUsed ? '✔️' : '—'}</td>
-                                                                    </tr>
-                                                                ))}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                                <table className="table table-sm">
+                                                    <thead><tr><th>Teszt</th><th>Pont</th><th>Átlag</th></tr></thead>
+                                                    <tbody>
+                                                    {s.tests.map((t, j) => (
+                                                        <tr key={j}><td>{t.title}</td><td>{t.totalScore}</td><td>{avg}</td></tr>
+                                                    ))}
+                                                    </tbody>
+                                                </table>
+                                                <button
+                                                    className="btn btn-secondary"
+                                                    onClick={() => setExpandedTests(expandedTests === i ? null : i)}
+                                                >
+                                                    {expandedTests === i ? 'Teszt részletek elrejtése' : 'Teszt részletek megjelenítése'}
+                                                </button>
+
+                                                {expandedTests === i && (
+                                                    <div className="mt-3">
+                                                        {s.tests.map((t, k) => (
+                                                            <div key={k} className="card mt-2">
+                                                                <div className="card-body">
+                                                                    <h5>{t.title} – {t.grade} ({t.totalScore} pont)</h5>
+                                                                    <table className="table table-sm">
+                                                                        <thead><tr><th>#</th><th>Kérdés</th><th>Válasz</th><th>Helyes</th><th>Pont</th><th>AI</th></tr></thead>
+                                                                        <tbody>
+                                                                        {t.questions?.map((q, qIndex) => (
+                                                                            <tr key={qIndex}>
+                                                                                <td>{qIndex + 1}</td>
+                                                                                <td>{q.questionText}</td>
+                                                                                <td>{q.answers?.[q.selectedAnswerIndex]}</td>
+                                                                                <td>{q.answers?.[q.correctAnswerIndex]}</td>
+                                                                                <td>{q.scoreGiven}</td>
+                                                                                <td>{q.aiHelpUsed ? '✔️' : '—'}</td>
+                                                                            </tr>
+                                                                        ))}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                ))}
+                                                )}
                                             </div>
                                         )}
                                     </div>
-                                ))}
-                            </div>
+                                );
+                            })}
 
-                            <button className="btn btn-primary mt-4" onClick={() => setShowStats(!showStats)}>
-                                {showStats ? 'Statisztikák elrejtése' : 'Statisztikák megjelenítése'}
+                            <hr className="my-5"/>
+                            <button className="btn btn-info" onClick={() => setShowClassStats(!showClassStats)}>
+                                {showClassStats ? 'Statisztikák elrejtése' : 'Statisztikák megtekintése'}
                             </button>
-                            {showStats && generateStatistics()}
+                            {showClassStats && classStats()}
                         </>
                     )}
                 </div>
