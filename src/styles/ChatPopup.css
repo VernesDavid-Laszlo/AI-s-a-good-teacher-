@@ -1,32 +1,33 @@
-/* src/styles/ChatPopup.css */
-.chat-style {
-    width: 650px;
-    height: 480px;
+.CP-popup {
     position: fixed;
-    bottom: 5px;
-    right: 50px;
-    border-radius: 10px;
-    overflow: hidden;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 320px;
+    height: 450px;
+    background-color: white;
+    border: 2px solid #007bff;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
     display: flex;
     flex-direction: column;
-    border: 2px solid #6200ea;
-    background: #ffffff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    animation: slideIn 0.3s ease forwards;
 }
 
-.headerC {
+.CP-header {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background: #6200ea;
-    color: white;
     font-weight: bold;
-    height: 40px;
+    font-size: 16px;
+    border-radius: 5px 5px 0 0;
 }
 
-.close-buttonc {
+.CP-close-btn {
     background: transparent;
     border: none;
     color: white;
@@ -34,66 +35,78 @@
     cursor: pointer;
 }
 
-.bodyC {
+.CP-body {
     flex: 1;
-    padding: 10px;
-    background: #ffffff;
-    overflow-y: auto;
-    max-height: 380px;
-}
-
-.footerC {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background: #ffffff;
-    height: 40px;
-}
-
-.input-field {
-    flex: 1;
-    border: 1px solid #6200ea;
-    border-radius: 50px;
-    height: 40px;
-    padding: 0 15px;
-    margin-right: 5px;
-    background-color: #6200ea;
-    color: white;
-}
-
-.input-field::placeholder {
-    color: white;
-}
-
-.send-button {
-    background-color: #6200ea;
-    color: white;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-}
-
-.sent-message {
-    background-color: #6200ea;
-    color: white;
     padding: 8px;
-    margin-bottom: 10px;
-    margin-left: 25px;
-    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.CP-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px;
+    margin-bottom: 8px;
+}
+
+.CP-message {
+    margin-bottom: 6px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.CP-sent {
+    background-color: #DCF8C6;
     align-self: flex-end;
 }
 
-.received-message {
-    background-color: #444046;
-    color: white;
-    padding: 8px;
-    margin-bottom: 10px;
-    margin-right: 25px;
-    border-radius: 20px;
+.CP-received {
+    background-color: #f1f0f0;
     align-self: flex-start;
+}
+
+.CP-input {
+    resize: none;
+    padding: 6px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.CP-send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.CP-send-button:hover {
+    background-color: #0056b3;
+}
+
+.CP-status {
+    margin-top: 4px;
+    font-size: 12px;
+    color: green;
+}
+
+.CP-toggle-button {
+    position: fixed;
+    top: 20%;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 0 8px 8px 0;
+    z-index: 1000;
+    font-weight: bold;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
 }

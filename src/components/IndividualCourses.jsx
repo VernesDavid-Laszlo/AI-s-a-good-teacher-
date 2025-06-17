@@ -404,7 +404,7 @@ const IndividualCourses = () => {
 
                                     )}
                                 </div>
-                                <ChatPopup/>
+                                <ChatPopup mode="question" />
                                 <ChatAI mode="individual"/>
                             </div>
                         ))
