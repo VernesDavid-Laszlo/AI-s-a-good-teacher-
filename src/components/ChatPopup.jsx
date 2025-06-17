@@ -115,4 +115,5 @@ const ChatPopup = ({ currentCourseId, overrideRecipientId = null, mode = "questi
     );
 };
 
+
 export default ChatPopup;
