@@ -78,7 +78,7 @@ const QuickSortAnimation = () => {
 
         const timeout = setTimeout(() => {
             setCurrentStep((prev) => prev + 1);
-        }, 1500); // Lassúbb lépésenkénti animáció
+        }, 1500);
 
         return () => clearTimeout(timeout);
     }, [isSorting, currentStep, steps]);
@@ -87,14 +87,12 @@ const QuickSortAnimation = () => {
         const elements = document.querySelectorAll('.array-elementQ');
         const [firstIdx, secondIdx] = indices;
 
-        // Felemelt elemek animációja
         const firstElement = elements[firstIdx];
         const secondElement = elements[secondIdx];
 
         gsap.to(firstElement, { y: -50, duration: 0.7 });
         gsap.to(secondElement, { y: -50, duration: 0.7 });
 
-        // Helycsere animációja
         setTimeout(() => {
             setCurrentArray(newArray);
             gsap.to(firstElement, { y: 0, duration: 0.7 });
@@ -106,29 +104,24 @@ const QuickSortAnimation = () => {
         const elements = document.querySelectorAll('.array-elementQ');
         const pivotElement = elements[pivotIndex];
 
-        // Kiemeljük a pivotot
         gsap.to(pivotElement, { backgroundColor: '#ff9800', scale: 1.2, duration: 0.7 });
 
-        // Elválasztjuk a tömböt balra és jobbra
         for (let i = low; i <= high; i++) {
             gsap.to(elements[i], { backgroundColor: '#03a9f4', duration: 0.7 });
         }
 
-        // Amikor a pivot véglegesen a helyére kerül, azonnal zöldre vált
         setTimeout(() => {
-            gsap.to(pivotElement, { backgroundColor: '#4caf50', duration: 0.7 }); // Pivot végleges zöld szín
+            gsap.to(pivotElement, { backgroundColor: '#4caf50', duration: 0.7 });
         }, 700);
 
-        // A tömb két részét az animáció során nyomon követjük
         setTimeout(() => {
-            gsap.to(elements.slice(low, pivotIndex), { backgroundColor: '#8bc34a', duration: 0.7 }); // Bal rész zöld
-            gsap.to(elements.slice(pivotIndex + 1, high), { backgroundColor: '#8bc34a', duration: 0.7 }); // Jobb rész zöld
-        }, 1500); // Késleltetés a zöldre váltás előtt
+            gsap.to(elements.slice(low, pivotIndex), { backgroundColor: '#8bc34a', duration: 0.7 });
+            gsap.to(elements.slice(pivotIndex + 1, high), { backgroundColor: '#8bc34a', duration: 0.7 });
+        }, 1500);
     };
 
     useEffect(() => {
         if (isSorting && currentStep === steps.length) {
-            // Az összes elem zöldre váltása, amikor vége a rendezésnek
             const elements = document.querySelectorAll('.array-elementQ');
             elements.forEach((element) => {
                 gsap.to(element, { backgroundColor: '#4caf50', duration: 1 });

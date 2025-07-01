@@ -10,7 +10,7 @@ const SelectionSortPractice = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [minIndexFound, setMinIndexFound] = useState(null);
     const [finalizedIndices, setFinalizedIndices] = useState(new Set());
-    const [practiceStep, setPracticeStep] = useState('findMin'); // 'findMin' or 'swap'
+    const [practiceStep, setPracticeStep] = useState('findMin');
 
     const handleElementClick = (index) => {
         if (practiceStep === 'findMin') {
@@ -21,19 +21,16 @@ const SelectionSortPractice = () => {
     };
 
     const handleFindMinStep = (index) => {
-        // Only allow clicks on elements that are not finalized
         if (finalizedIndices.has(index)) {
             setMessage('This element is already sorted. Focus on the unsorted portion.');
             return;
         }
 
-        // Only allow selection of elements from the unsorted portion
         if (index < currentIndex) {
             setMessage('This element is already sorted. Focus on the unsorted portion.');
             return;
         }
 
-        // Find the actual minimum in the current unsorted portion
         let actualMinIndex = currentIndex;
         for (let i = currentIndex + 1; i < array.length; i++) {
             if (array[i] < array[actualMinIndex]) {
@@ -47,7 +44,6 @@ const SelectionSortPractice = () => {
             setMinIndexFound(index);
             setPracticeStep('swap');
 
-            // Highlight the found minimum
             const elements = document.querySelectorAll('.array-element');
             gsap.to(elements[index], {
                 backgroundColor: 'yellow',
@@ -58,7 +54,6 @@ const SelectionSortPractice = () => {
             setMessage(`Incorrect! That's not the smallest element. Try again.`);
             setFeedback('❌');
 
-            // Flash the incorrect selection
             const elements = document.querySelectorAll('.array-element');
             gsap.to(elements[index], {
                 backgroundColor: 'red',
@@ -75,10 +70,8 @@ const SelectionSortPractice = () => {
     };
 
     const handleSwapStep = (index) => {
-        // Only allow selection of the current position to swap with
         if (index === currentIndex) {
             if (minIndexFound === currentIndex) {
-                // No swap needed, just mark it as sorted
                 setMessage('This element is already in the correct position!');
                 finalizeCurrent();
             } else {
@@ -90,7 +83,6 @@ const SelectionSortPractice = () => {
             setMessage('Incorrect! You need to swap with the current position in the iteration.');
             setFeedback('❌');
 
-            // Flash the incorrect selection
             const elements = document.querySelectorAll('.array-element');
             gsap.to(elements[index], {
                 backgroundColor: 'red',
@@ -132,15 +124,12 @@ const SelectionSortPractice = () => {
     };
 
     const finalizeCurrent = () => {
-        // Mark the current position as finalized
         const newFinalizedIndices = new Set(finalizedIndices);
         newFinalizedIndices.add(currentIndex);
         setFinalizedIndices(newFinalizedIndices);
 
-        // Move to the next position
         const nextIndex = currentIndex + 1;
 
-        // Highlight the current position in green
         const elements = document.querySelectorAll('.array-element');
         gsap.to(elements[currentIndex], {
             backgroundColor: 'green',
@@ -149,7 +138,6 @@ const SelectionSortPractice = () => {
 
         setTimeout(() => {
             if (nextIndex >= array.length) {
-                // Sorting complete
                 setMessage('Sorting complete! Well done!');
                 setFeedback('🎉');
             } else {
@@ -159,7 +147,6 @@ const SelectionSortPractice = () => {
                 setMessage('Find the smallest element in the remaining unsorted portion');
                 setFeedback(null);
 
-                // Highlight the next current position
                 gsap.to(elements[nextIndex], {
                     scale: 1.1,
                     duration: 0.3,
@@ -245,12 +232,11 @@ const SelectionSortPractice = () => {
             <br/>
             <br/>
             <div style={{position: 'relative', marginBottom: '40px', height: '100px'}}>
-                {/* Current index indicator - positioned higher */}
                 {currentIndex < array.length && (
                     <div style={{
                         position: 'absolute',
                         left: `calc(50% - ${(array.length * 60) / 2}px + ${currentIndex * 60}px + 25px)`,
-                        top: '-40px', // Moved higher
+                        top: '-40px',
                         transform: 'translateX(-50%)',
                         color: '#333',
                         fontWeight: 'bold',
@@ -297,10 +283,9 @@ const SelectionSortPractice = () => {
                             onClick={() => handleElementClick(index)}
                         >
                             {value}
-                            {/* Index labels - positioned lower */}
                             <div style={{
                                 position: 'absolute',
-                                bottom: '-35px', // Moved lower
+                                bottom: '-35px',
                                 left: '50%',
                                 transform: 'translateX(-50%)',
                                 fontSize: '14px',

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { gsap } from "gsap";
 
-// Egyszerű BST reprezentáció objektumként
 const tree = {
     value: 15,
     left: {
@@ -26,7 +25,6 @@ const BSTAnimation = () => {
             return;
         }
 
-        // Kiemelés sárgával
         await gsap.to(`#node-${id}`, { backgroundColor: "yellow", duration: 1 });
 
         if (node.value === target) {
@@ -41,11 +39,9 @@ const BSTAnimation = () => {
             await searchBST(node.right, `${id}-right`);
         }
 
-        // Visszaállítás pirosra, ha nem találta
         await gsap.to(`#node-${id}`, { backgroundColor: "red", duration: 1 });
     };
 
-    // Rekurzív függvény a fa kirajzolására
     const renderTree = (node, id) => {
         if (!node) return null;
 

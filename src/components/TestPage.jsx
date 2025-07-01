@@ -14,7 +14,7 @@ function TestPage() {
     const [test, setTest] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
-    const [questionAIHelpUsed, setQuestionAIHelpUsed] = useState({}); // új: melyik kérdésnél használt AI-t
+    const [questionAIHelpUsed, setQuestionAIHelpUsed] = useState({});
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [aiHelpCount, setAiHelpCount] = useState(0);
 
@@ -53,18 +53,16 @@ function TestPage() {
             return;
         }
 
-        // 🟢 Ellenőrizzük hogy a users/{user.uid} doc létezik-e, ha nem → létrehozzuk
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
             await setDoc(userDocRef, {
                 createdAt: serverTimestamp(),
-                role: 1 // default role = diák (ha nálatok van role kezelés)
+                role: 1
             });
         }
 
-        // ⬇️ Kérdésenként összerakjuk a mentendő adatot
         const questionsData = test.questions.map((question, index) => {
             const selectedAnswerIndex = selectedAnswers[index] ?? -1;
             const isCorrect = selectedAnswerIndex === question.correctAnswerIndex;
@@ -82,7 +80,6 @@ function TestPage() {
 
         const totalScore = questionsData.reduce((sum, q) => sum + q.scoreGiven, 0);
 
-        // ⬇️ AI-tól grade-et kérünk a tesztre
         const gradePrompt = `Here is the test result:\n` +
             questionsData.map((q, idx) =>
                 `Q${idx + 1}: "${q.questionText}"\nSelected: ${q.selectedAnswerIndex}, Correct: ${q.correctAnswerIndex}, AI used: ${q.aiHelpUsed}, Score: ${q.scoreGiven}\n`
@@ -117,7 +114,6 @@ function TestPage() {
             console.error("AI grading error:", error);
         }
 
-        // ⬇️ Teszt eredmény mentése Firestore-ba → users/{user.uid}/tests/{auto-id}
         try {
             await addDoc(collection(db, "users", user.uid, "tests"), {
                 title: test.title,

@@ -63,7 +63,6 @@ function Admin() {
         }
     };
 
-    // ÚJ: kezelőfüggvény a tesztfeltöltés gombhoz
     const handleUploadTests = async () => {
         try {
             await uploadTestsToChapter("searchingAlgorithms", "binarySearch", searchingAlgorithmsTests.binarySearchTests);
@@ -101,7 +100,7 @@ function Admin() {
                     {isAdmin ? (
                         <>
                             <div className="users-container">
-                                <h1>Felhasználók listája</h1>
+                                <h1>Users list</h1>
                                 <br />
                                 {users.length > 0 ? (
                                     <ul>
@@ -131,7 +130,6 @@ function Admin() {
                                 )}
                             </div>
 
-                            {/* ÚJ rész: tesztfeltöltés gomb */}
                             <div style={{
                                 marginTop: "40px",
                                 padding: "20px",

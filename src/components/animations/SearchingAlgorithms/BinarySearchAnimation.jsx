@@ -14,7 +14,6 @@ const BinarySearchAnimation = () => {
         while (left <= right) {
             let mid = Math.floor((left + right) / 2);
 
-            // Highlight the middle element
             await gsap.to(`#bar-${mid}`, { backgroundColor: "yellow", duration: 1 });
 
             if (array[mid] === target) {
@@ -30,7 +29,6 @@ const BinarySearchAnimation = () => {
                 right = mid - 1;
             }
 
-            // Reset color of checked element
             await gsap.to(`#bar-${mid}`, { backgroundColor: "red", duration: 1 });
         }
 

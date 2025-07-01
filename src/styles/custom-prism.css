@@ -1,23 +1,23 @@
-/* Háttér és alap szövegszín */
+
 pre[class*="language-"] {
-    background: #282a36 !important;  /* Dracula háttér */
-    color: #f8f8f2 !important;       /* Világos szöveg */
+    background: #282a36 !important;
+    color: #f8f8f2 !important;
 }
 
-/* Kiemelések */
+
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-    color: #6272a4 !important;  /* Kékesszürke kommentek */
+    color: #6272a4 !important;
 }
 
 .token.punctuation {
-    color: #f8f8f2 !important;  /* Fehér írásjelek */
+    color: #f8f8f2 !important;
 }
 
 .token.keyword {
-    color: #ff79c6 !important;  /* Rózsaszín kulcsszavak */
+    color: #ff79c6 !important;
 }
 
 .token.property,
@@ -25,7 +25,7 @@ pre[class*="language-"] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-    color: #ff5555 !important;  /* Piros property és törölt dolgok */
+    color: #ff5555 !important;
 }
 
 .token.selector,
@@ -34,24 +34,24 @@ pre[class*="language-"] {
 .token.char,
 .token.builtin,
 .token.inserted {
-    color: #50fa7b !important;  /* Zöld attribútumok és stringek */
+    color: #50fa7b !important;
 }
 
 .token.operator,
 .token.entity,
 .token.url,
 .token.variable {
-    color: #f8f8f2 !important;  /* Fehér operátorok */
+    color: #f8f8f2 !important;
 }
 
 .token.function {
-    color: #ffb86c !important;  /* Narancssárga függvénynevek */
+    color: #ffb86c !important;
 }
 
 .token.number {
-    color: #bd93f9 !important;  /* Lila számok */
+    color: #bd93f9 !important;
 }
 
 .token.boolean {
-    color: #ff79c6 !important;  /* Rózsaszín boolean */
+    color: #ff79c6 !important;
 }

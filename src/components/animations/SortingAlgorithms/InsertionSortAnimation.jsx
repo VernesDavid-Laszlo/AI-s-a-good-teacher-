@@ -1,42 +1,35 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './InsertionSortAnimation.css'; // Make sure to create this CSS file
+import './InsertionSortAnimation.css';
 
 const insertionSortSteps = (array) => {
     const arr = [...array];
     const steps = [];
     const sortedIndices = new Set();
 
-    // Start from the second element (index 1)
+
     for (let i = 1; i < arr.length; i++) {
-        // Current element to be inserted
         const current = arr[i];
         steps.push({ type: 'select', index: i, value: current });
 
-        // Compare with elements in the sorted portion
         let j = i - 1;
 
-        // While we haven't reached the start and current element is smaller
         while (j >= 0) {
             steps.push({ type: 'compare', indices: [j, i] });
 
             if (arr[j] > current) {
-                // Move element to the right
                 arr[j + 1] = arr[j];
                 steps.push({ type: 'shift', fromIndex: j, toIndex: j + 1, array: [...arr] });
                 j--;
             } else {
-                // Found the right position
                 break;
             }
         }
 
-        // Insert the current element at the correct position
         arr[j + 1] = current;
         steps.push({ type: 'insert', index: j + 1, value: current, array: [...arr] });
     }
 
-    // Check which elements are in their final sorted position
     const sortedArr = [...array].sort((a, b) => a - b);
     for (let i = 0; i < arr.length; i++) {
         if (arr[i] === sortedArr[i]) {
@@ -69,7 +62,6 @@ const InsertionSortAnimation = () => {
             setSelectedElement(null);
             setSortedIndices(new Set());
 
-            // Reset all visual states
             const elements = document.querySelectorAll('.insertion-array-element');
             elements.forEach(el => {
                 el.classList.remove('insertion-compare', 'insertion-sorted', 'insertion-selected');
@@ -85,7 +77,6 @@ const InsertionSortAnimation = () => {
             return;
         }
 
-        // Reset visual states
         const elements = document.querySelectorAll('.insertion-array-element');
         elements.forEach(el => {
             el.classList.remove('insertion-compare', 'insertion-sorted', 'insertion-selected');
@@ -102,7 +93,6 @@ const InsertionSortAnimation = () => {
             if (currentStep >= steps.length && steps.length > 0) {
                 setIsSorting(false);
 
-                // After sorting is complete, check which elements are in their final position
                 const sortedArr = [...currentArray].sort((a, b) => a - b);
                 const newSortedIndices = new Set();
 
@@ -114,7 +104,6 @@ const InsertionSortAnimation = () => {
 
                 setSortedIndices(newSortedIndices);
 
-                // Mark elements in final position as sorted
                 const elements = document.querySelectorAll('.insertion-array-element');
                 elements.forEach((el, idx) => {
                     if (newSortedIndices.has(idx)) {
@@ -144,7 +133,7 @@ const InsertionSortAnimation = () => {
 
         const timeout = setTimeout(() => {
             setCurrentStep((prev) => prev + 1);
-        }, 1000); // Each step takes 1 second
+        }, 1000);
 
         return () => clearTimeout(timeout);
     }, [isSorting, currentStep, steps, currentArray]);
@@ -174,7 +163,6 @@ const InsertionSortAnimation = () => {
     const shiftElement = (fromIndex, toIndex, newArray) => {
         const elements = document.querySelectorAll('.insertion-array-element');
 
-        // Animate the shift
         gsap.to(elements[fromIndex], {
             y: -30,
             duration: 0.3,
@@ -194,13 +182,11 @@ const InsertionSortAnimation = () => {
     const insertElement = (index, value, newArray) => {
         setCurrentArray(newArray);
 
-        // Highlight the inserted element
         setTimeout(() => {
             const elements = document.querySelectorAll('.insertion-array-element');
             if (elements[index]) {
                 elements[index].classList.add('insertion-inserted');
 
-                // Remove the inserted highlight after a brief period
                 setTimeout(() => {
                     elements[index].classList.remove('insertion-inserted');
                 }, 500);
@@ -211,7 +197,6 @@ const InsertionSortAnimation = () => {
     const markAsFinalPosition = (index) => {
         const elements = document.querySelectorAll('.insertion-array-element');
         if (elements[index]) {
-            // Create a new set with the existing sorted indices plus the new one
             const newSortedIndices = new Set(sortedIndices);
             newSortedIndices.add(index);
             setSortedIndices(newSortedIndices);
@@ -220,9 +205,8 @@ const InsertionSortAnimation = () => {
         }
     };
 
-    // Check if an element is in its final sorted position for rendering
     const isInFinalPosition = (index) => {
-        // Only for rendering - check if the current element at this index is in the correct sorted position
+
         const sortedArr = [...currentArray].sort((a, b) => a - b);
         return currentArray[index] === sortedArr[index];
     };

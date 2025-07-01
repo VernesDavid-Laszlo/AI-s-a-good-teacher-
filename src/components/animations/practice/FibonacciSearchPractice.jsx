@@ -18,7 +18,7 @@ const FibonacciSearchPractice = () => {
     const [clickableElements, setClickableElements] = useState([]);
     const [disabledElements, setDisabledElements] = useState([]);
 
-    // Fibonacci numbers explanation
+
     const fibonacciExplanation = [
         {
             title: "What is Fibonacci Search?",
@@ -34,7 +34,7 @@ const FibonacciSearchPractice = () => {
         }
     ];
 
-    // Reset colors and practice state
+
     const resetPractice = () => {
         gsap.to(".box", { backgroundColor: "#6200ea", duration: 0.5 });
         gsap.to(".box", { opacity: 1, duration: 0.5 });
@@ -48,7 +48,7 @@ const FibonacciSearchPractice = () => {
         setClickableElements([]);
     };
 
-    // Start practice
+
     const startPractice = () => {
         resetPractice();
         setIsPracticing(true);
@@ -56,14 +56,14 @@ const FibonacciSearchPractice = () => {
         setMessage("First, we need to find the position to start our search. Try to find the correct position!");
     };
 
-    // Initialize fibonacci numbers for the search
+
     const initializeFibonacciNumbers = () => {
         let n = array.length;
 
-        // Find the smallest Fibonacci number greater than or equal to n
-        let fibM2 = 0;  // (m-2)'th Fibonacci number
-        let fibM1 = 1;  // (m-1)'th Fibonacci number
-        let fibM = fibM1 + fibM2;  // m'th Fibonacci number
+
+        let fibM2 = 0;
+        let fibM1 = 1;
+        let fibM = fibM1 + fibM2;
 
         while (fibM < n) {
             fibM2 = fibM1;
@@ -73,26 +73,26 @@ const FibonacciSearchPractice = () => {
 
         setFibNumbers({ fibM, fibM1, fibM2 });
 
-        // Initial search index is offset + fibM2 position
+
         const firstIndex = Math.min(fibM2 - 1, n - 1);
         setClickableElements([firstIndex]);
         setNextStepHint(`Click on index ${firstIndex}, which is the initial position (min(fibM2-1, array.length-1)) to start Fibonacci search.`);
     };
 
-    // Handle box click in practice mode
+
     const handleBoxClick = (index) => {
         if (!isPracticing || feedbackVisible) return;
 
-        // If this index is not clickable, show error
+
         if (!clickableElements.includes(index)) {
             showFeedback(false, "Incorrect position! Follow the hint to find where to click next.");
             return;
         }
 
-        // Highlight the clicked element
+
         gsap.to(`#box-${index}`, { backgroundColor: "yellow", duration: 0.5 });
 
-        // Check if target found at current position
+
         if (array[index] === target) {
             showFeedback(true, `Great job! You found ${target} at index ${index}!`);
             gsap.to(`#box-${index}`, { backgroundColor: "green", duration: 0.5 });
@@ -100,49 +100,39 @@ const FibonacciSearchPractice = () => {
             return;
         }
 
-        // Get the current Fibonacci numbers
+
         const { fibM, fibM1, fibM2 } = fibNumbers;
 
         if (array[index] < target) {
-            // Need to search right
+
             showFeedback(true, `Correct! ${array[index]} < ${target}, so we need to search to the right.`);
             setTimeout(() => {
                 gsap.to(`#box-${index}`, { backgroundColor: "red", duration: 0.5 });
 
-                // Update Fibonacci numbers for the right subdivision
-                // In Fibonacci search, when going right:
-                // - fibM becomes fibM1
-                // - fibM1 becomes fibM2
-                // - fibM2 becomes fibM - fibM1 (= fibM1 - fibM2)
                 const newFibM = fibM1;
                 const newFibM1 = fibM2;
                 const newFibM2 = fibM1 - fibM2;
 
-                // Update offset
                 const newOffset = index + 1;
 
-                // Update state
                 setFibNumbers({ fibM: newFibM, fibM1: newFibM1, fibM2: newFibM2 });
                 setOffset(newOffset);
                 setCurrentRangeStart(newOffset);
 
-                // Disable elements up to and including the current index
                 const newDisabled = Array.from({length: index + 1}, (_, i) => i);
                 setDisabledElements([...disabledElements, ...newDisabled]);
 
-                // Gray out disabled elements
                 newDisabled.forEach(i => {
                     if (!disabledElements.includes(i)) {
                         gsap.to(`#box-${i}`, { opacity: 0.3, duration: 0.5 });
                     }
                 });
 
-                // Calculate next position to check
-                // Next index = offset + fibM2 - 1 (adjusted by 1 as per Fibonacci search algorithm)
+
                 const nextPos = Math.min(newOffset + Math.max(0, newFibM2 - 1), currentRangeEnd);
 
                 if (nextPos <= newOffset || newFibM2 <= 0) {
-                    // We've exhausted Fibonacci numbers, check elements sequentially
+
                     const remainingIndices = Array.from(
                         {length: currentRangeEnd - newOffset + 1},
                         (_, i) => i + newOffset
@@ -165,43 +155,32 @@ const FibonacciSearchPractice = () => {
                 setMessage("Continue searching in the right portion. Where should you check next?");
             }, 1500);
         } else {
-            // Need to search left
+
             showFeedback(true, `Correct! ${array[index]} > ${target}, so we need to search to the left.`);
             setTimeout(() => {
                 gsap.to(`#box-${index}`, { backgroundColor: "red", duration: 0.5 });
 
-                // Update Fibonacci numbers for the left subdivision
-                // In Fibonacci search, when going left:
-                // - fibM becomes fibM2
-                // - fibM1 becomes fibM1 - fibM2
-                // - fibM2 becomes fibM - fibM1 (= fibM2)
                 const newFibM = fibM2;
                 const newFibM1 = fibM1 - fibM2;
                 const newFibM2 = fibM - fibM1; // This equals fibM2 in standard implementation
 
-                // Update search range
                 const newRangeEnd = index - 1;
 
-                // Update state
                 setFibNumbers({ fibM: newFibM, fibM1: newFibM1, fibM2: newFibM2 });
                 setCurrentRangeEnd(newRangeEnd);
 
-                // Disable elements from index to end
                 const newDisabled = Array.from({length: array.length - index}, (_, i) => i + index);
                 setDisabledElements([...disabledElements, ...newDisabled]);
 
-                // Gray out disabled elements
                 newDisabled.forEach(i => {
                     if (!disabledElements.includes(i)) {
                         gsap.to(`#box-${i}`, { opacity: 0.3, duration: 0.5 });
                     }
                 });
 
-                // Calculate next position - for left search it's offset + fibM2 - 1
                 const nextPos = Math.min(offset + Math.max(0, newFibM2 - 1), newRangeEnd);
 
                 if (nextPos < currentRangeStart || nextPos > newRangeEnd || newFibM2 <= 0) {
-                    // We've exhausted our search or Fibonacci numbers, check elements sequentially
                     const remainingIndices = Array.from(
                         {length: newRangeEnd - currentRangeStart + 1},
                         (_, i) => i + currentRangeStart
@@ -226,7 +205,7 @@ const FibonacciSearchPractice = () => {
         }
     };
 
-    // Show feedback message
+
     const showFeedback = (correct, message) => {
         setFeedbackVisible(true);
         setFeedbackCorrect(correct);
@@ -235,7 +214,6 @@ const FibonacciSearchPractice = () => {
         setTimeout(() => {
             setFeedbackVisible(false);
             if (!correct && message !== `The target ${target} is not in the array.`) {
-                // Reset practice on incorrect
                 resetPractice();
                 startPractice();
             }
@@ -260,7 +238,7 @@ const FibonacciSearchPractice = () => {
                 marginBottom: "20px",
                 boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
             }}>
-                {/* Display all explanations at once */}
+
                 {fibonacciExplanation.map((explanation, index) => (
                     <div key={index} style={{ marginBottom: index < fibonacciExplanation.length - 1 ? "15px" : "0" }}>
                         <h3 style={{
@@ -276,7 +254,7 @@ const FibonacciSearchPractice = () => {
                 ))}
             </div>
 
-            {/* Practice controls */}
+
             <div style={{
                 display: "flex",
                 justifyContent: "center",
@@ -318,7 +296,6 @@ const FibonacciSearchPractice = () => {
                 </button>
             </div>
 
-            {/* Status message */}
             <div style={{
                 backgroundColor: "#e8eaf6",
                 color: "#283593",
@@ -332,7 +309,7 @@ const FibonacciSearchPractice = () => {
                 {message}
             </div>
 
-            {/* Hint message */}
+
             {isPracticing && (
                 <div style={{
                     backgroundColor: "#fff3e0",
@@ -347,7 +324,7 @@ const FibonacciSearchPractice = () => {
                 </div>
             )}
 
-            {/* Fibonacci numbers display */}
+
             {isPracticing && (
                 <div style={{
                     backgroundColor: "#e1f5fe",
@@ -376,7 +353,6 @@ const FibonacciSearchPractice = () => {
                 </div>
             )}
 
-            {/* Feedback message */}
             {feedbackVisible && (
                 <div style={{
                     backgroundColor: feedbackCorrect ? "#e8f5e9" : "#ffebee",
@@ -396,7 +372,6 @@ const FibonacciSearchPractice = () => {
                 </div>
             )}
 
-            {/* Array visualization */}
             <div style={{
                 display: "flex",
                 justifyContent: "center",
@@ -445,7 +420,6 @@ const FibonacciSearchPractice = () => {
                 ))}
             </div>
 
-            {/* Legend */}
             <div style={{
                 display: "flex",
                 justifyContent: "center",

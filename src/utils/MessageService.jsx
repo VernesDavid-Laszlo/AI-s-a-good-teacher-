@@ -1,7 +1,7 @@
 import { collection, addDoc, getDocs, query, where, serverTimestamp, orderBy } from 'firebase/firestore';
 import { db } from '../firebase-config';
 
-// Üzenet elküldése
+
 export const sendMessage = async (senderId, recipientId, text) => {
     return await addDoc(collection(db, "messages"), {
         sender: senderId,
@@ -11,7 +11,7 @@ export const sendMessage = async (senderId, recipientId, text) => {
     });
 };
 
-// Beérkezett üzenetek lekérdezése
+
 export const getReceivedMessages = async (userId) => {
     const q = query(
         collection(db, "messages"),

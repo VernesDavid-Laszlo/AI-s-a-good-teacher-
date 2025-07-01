@@ -19,7 +19,7 @@
     }
 
     .dashboard-card {
-        width: 100%; /* 50px margó jobbra-balra */
+        width: 100%;
         border-radius: 12px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }

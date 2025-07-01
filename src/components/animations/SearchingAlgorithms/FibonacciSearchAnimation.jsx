@@ -9,7 +9,6 @@ const FibonacciSearchAnimation = () => {
     const [isAnimating, setIsAnimating] = useState(false);
     const [showExplanation, setShowExplanation] = useState(true);
 
-    // Fibonacci numbers explanation
     const fibonacciExplanation = [
         {
             title: "What is Fibonacci Search?",
@@ -25,12 +24,10 @@ const FibonacciSearchAnimation = () => {
         }
     ];
 
-    // Reset colors function
     const resetColors = () => {
         gsap.to(".box", { backgroundColor: "#6200ea", duration: 0.5 });
     };
 
-    // Fibonacci search algorithm with explanations
     const fibonacciSearch = async () => {
         if (isAnimating) return;
 
@@ -39,11 +36,10 @@ const FibonacciSearchAnimation = () => {
         setStep(0);
 
         let n = array.length;
-        let fibM2 = 0;  // (m-2)-th Fibonacci number
-        let fibM1 = 1;  // (m-1)-th Fibonacci number
-        let fibM = fibM2 + fibM1;  // m-th Fibonacci number
+        let fibM2 = 0;
+        let fibM1 = 1;
+        let fibM = fibM2 + fibM1;
 
-        // Find the smallest Fibonacci number greater than or equal to n
         while (fibM < n) {
             fibM2 = fibM1;
             fibM1 = fibM;
@@ -57,7 +53,6 @@ const FibonacciSearchAnimation = () => {
         await new Promise((resolve) => setTimeout(resolve, 3500));
 
         while (fibM > 1) {
-            // Calculate valid index
             let i = Math.min(offset + fibM2, n - 1);
 
             setMessage(`Checking index ${i}, value: ${array[i]}`);
@@ -65,32 +60,27 @@ const FibonacciSearchAnimation = () => {
             setStep(2);
             await new Promise((resolve) => setTimeout(resolve, 3500));
 
-            // If target is found
             if (array[i] === target) {
                 setMessage(`Found ${target} at index ${i}! ✅`);
                 await gsap.to(`#box-${i}`, { backgroundColor: "green", duration: 3 });
                 setIsAnimating(false);
                 return;
             }
-            // If target is greater than the value at index
             else if (array[i] < target) {
                 setMessage(`Going right (new offset: ${i}), because ${array[i]} < ${target} ❌`);
                 await gsap.to(`#box-${i}`, { backgroundColor: "red", duration: 3 });
                 setStep(3);
 
-                // Update Fibonacci numbers for the right part
                 fibM = fibM1;
                 fibM1 = fibM2;
                 fibM2 = fibM - fibM1;
                 offset = i;
             }
-            // If target is less than the value at index
             else {
                 setMessage(`Going left, because ${array[i]} > ${target} ❌`);
                 await gsap.to(`#box-${i}`, { backgroundColor: "red", duration: 3 });
                 setStep(4);
 
-                // Update Fibonacci numbers for the left part
                 fibM = fibM2;
                 fibM1 = fibM1 - fibM2;
                 fibM2 = fibM - fibM1;
@@ -99,7 +89,6 @@ const FibonacciSearchAnimation = () => {
             await new Promise((resolve) => setTimeout(resolve, 3500));
         }
 
-        // Check last element
         if (fibM1 && offset + 1 < n && array[offset + 1] === target) {
             setMessage(`Found ${target} at index ${offset + 1}! ✅`);
             await gsap.to(`#box-${offset + 1}`, { backgroundColor: "green", duration: 3 });
@@ -111,7 +100,6 @@ const FibonacciSearchAnimation = () => {
         setIsAnimating(false);
     };
 
-    // Reset animation
     const resetAnimation = () => {
         resetColors();
         setMessage("Click 'Start' to begin");
@@ -131,7 +119,6 @@ const FibonacciSearchAnimation = () => {
         }}>
 
 
-            {/* Introduction and explanation toggle */}
             <div style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -154,7 +141,6 @@ const FibonacciSearchAnimation = () => {
                 </button>
             </div>
 
-            {/* Explanation panel */}
             {showExplanation && (
                 <div style={{
                     backgroundColor: "white",
@@ -163,7 +149,6 @@ const FibonacciSearchAnimation = () => {
                     marginBottom: "20px",
                     boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
                 }}>
-                    {/* Display all explanations at once */}
                     {fibonacciExplanation.map((explanation, index) => (
                         <div key={index} style={{ marginBottom: index < fibonacciExplanation.length - 1 ? "15px" : "0" }}>
                             <h3 style={{
@@ -195,7 +180,6 @@ const FibonacciSearchAnimation = () => {
                 </div>
             )}
 
-            {/* Search controls */}
             <div style={{
                 display: "flex",
                 justifyContent: "center",
@@ -256,7 +240,6 @@ const FibonacciSearchAnimation = () => {
                 </button>
             </div>
 
-            {/* Status message */}
             <div style={{
                 backgroundColor: "#e8eaf6",
                 color: "#283593",
@@ -270,7 +253,6 @@ const FibonacciSearchAnimation = () => {
                 {message}
             </div>
 
-            {/* Array visualization */}
             <div style={{
                 display: "flex",
                 justifyContent: "center",
@@ -314,7 +296,6 @@ const FibonacciSearchAnimation = () => {
                 ))}
             </div>
 
-            {/* Legend */}
             <div style={{
                 display: "flex",
                 justifyContent: "center",

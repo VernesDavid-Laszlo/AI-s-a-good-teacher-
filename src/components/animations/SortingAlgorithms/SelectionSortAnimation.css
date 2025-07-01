@@ -21,11 +21,11 @@
 }
 
 .array-elementSS.sorted {
-    background-color: green; /* Zöld szín */
+    background-color: green;
 }
 
 .array-elementSS.compare {
-    background-color: yellow; /* Narancssárga szín az összehasonlításra */
+    background-color: yellow;
 }
 
 .array-elementSS.pivot {
@@ -44,9 +44,9 @@
     background-color: #03a9f4;
 }
 .array-elementSS.merge {
-    background-color: #9c27b0; /* Lila a merge szakaszra */
+    background-color: #9c27b0;
 }
 
 .array-elementSS.splitting {
-    background-color: #f44336; /* Piros szín az elválasztásnál */
+    background-color: #f44336;
 }

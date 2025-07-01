@@ -22,7 +22,7 @@ const InterpolationSearchPractice = () => {
     }, [array.length]);
 
     const resetAnimation = () => {
-        // Reset all boxes to default color
+
         array.forEach((_, index) => {
             gsap.to(boxRefs.current[index], {
                 backgroundColor: '#6200ea',
@@ -31,7 +31,6 @@ const InterpolationSearchPractice = () => {
             });
         });
 
-        // Reset status indicators
         setStatus('initial');
         setShowFeedback(false);
         setLow(0);
@@ -46,22 +45,18 @@ const InterpolationSearchPractice = () => {
         resetAnimation();
         setStatus('running');
 
-        // Highlight the current search range
         gsap.to(boxRefs.current.slice(low, high + 1), {
             backgroundColor: '#9d46ff',
             duration: 0.5
         });
 
-        // Calculate the expected mid using interpolation formula
         const expectedMidVal = low + Math.floor((high - low) * (target - array[low]) / (array[high] - array[low]));
         setExpectedMid(expectedMidVal);
 
-        // Show the formula with actual values
         const formulaText = `mid = low + ⌊(high - low) × (target - A[low]) ÷ (A[high] - A[low])⌋`;
         const calculationText = `mid = ${low} + ⌊(${high} - ${low}) × (${target} - ${array[low]}) ÷ (${array[high]} - ${array[low]})⌋ = ${expectedMidVal}`;
         setFormula(`${formulaText}\n${calculationText}`);
 
-        // Animate the formula appearing
         if (formulaRef.current) {
             gsap.fromTo(formulaRef.current,
                 { opacity: 0, y: -20 },
@@ -98,7 +93,6 @@ const InterpolationSearchPractice = () => {
                 setExplanation(`In the next step, the high value changes to ${index - 1}.`);
             }
 
-            // Animate feedback
             if (feedbackRef.current) {
                 gsap.fromTo(feedbackRef.current,
                     { opacity: 0, scale: 0 },
@@ -106,7 +100,6 @@ const InterpolationSearchPractice = () => {
                 );
             }
         } else {
-            // Incorrect choice
             setStatus('incorrect');
             setShowFeedback(true);
 
@@ -126,7 +119,6 @@ const InterpolationSearchPractice = () => {
             setMessage(`Incorrect! The correct choice would have been index ${expectedMid}.`);
             setExplanation(`Based on the interpolation formula: ${low} + ⌊(${high} - ${low}) × (${target} - ${array[low]}) ÷ (${array[high]} - ${array[low]})⌋ = ${expectedMid}`);
 
-            // Animate feedback
             if (feedbackRef.current) {
                 gsap.fromTo(feedbackRef.current,
                     { opacity: 0, scale: 0 },
@@ -134,7 +126,6 @@ const InterpolationSearchPractice = () => {
                 );
             }
 
-            // Set timer to reset after error
             setTimeout(() => {
                 resetAnimation();
             }, 3000);
@@ -144,21 +135,18 @@ const InterpolationSearchPractice = () => {
     const continueSearch = () => {
         if (status !== 'correct') return;
 
-        // Update search range based on comparison
         if (array[expectedMid] === target) {
-            // Target found, reset for a new search
+
             setMessage('Search completed! Start a new search.');
             setTimeout(() => {
                 resetAnimation();
             }, 2000);
         } else if (array[expectedMid] < target) {
-            // Search right side
             setLow(expectedMid + 1);
             setHigh(high);
             setStatus('running');
             setShowFeedback(false);
 
-            // Update visuals
             gsap.to(boxRefs.current.slice(0, expectedMid + 1), {
                 backgroundColor: '#cccccc', // Grayed out eliminated section
                 duration: 0.5
@@ -169,25 +157,21 @@ const InterpolationSearchPractice = () => {
                 duration: 0.5
             });
 
-            // Calculate new expected mid
             const newLow = expectedMid + 1;
             const newMid = newLow + Math.floor((high - newLow) * (target - array[newLow]) / (array[high] - array[newLow]));
             setExpectedMid(newMid);
 
-            // Update formula display
             const formulaText = `mid = low + ⌊(high - low) × (target - A[low]) ÷ (A[high] - A[low])⌋`;
             const calculationText = `mid = ${newLow} + ⌊(${high} - ${newLow}) × (${target} - ${array[newLow]}) ÷ (${array[high]} - ${array[newLow]})⌋ = ${newMid}`;
             setFormula(`${formulaText}\n${calculationText}`);
 
             setMessage('Which element should be checked based on the interpolation formula? Click on it!');
         } else {
-            // Search left side
             setLow(low);
             setHigh(expectedMid - 1);
             setStatus('running');
             setShowFeedback(false);
 
-            // Update visuals
             gsap.to(boxRefs.current.slice(expectedMid), {
                 backgroundColor: '#cccccc', // Grayed out eliminated section
                 duration: 0.5
@@ -198,20 +182,17 @@ const InterpolationSearchPractice = () => {
                 duration: 0.5
             });
 
-            // Calculate new expected mid
             const newHigh = expectedMid - 1;
             if (newHigh >= low) {
                 const newMid = low + Math.floor((newHigh - low) * (target - array[low]) / (array[newHigh] - array[low]));
                 setExpectedMid(newMid);
 
-                // Update formula display
                 const formulaText = `mid = low + ⌊(high - low) × (target - A[low]) ÷ (A[high] - A[low])⌋`;
                 const calculationText = `mid = ${low} + ⌊(${newHigh} - ${low}) × (${target} - ${array[low]}) ÷ (${array[newHigh]} - ${array[low]})⌋ = ${newMid}`;
                 setFormula(`${formulaText}\n${calculationText}`);
 
                 setMessage('Which element should be checked based on the interpolation formula? Click on it!');
             } else {
-                // No more elements to search
                 setMessage('Search completed! The element is not in the array.');
                 setTimeout(() => {
                     resetAnimation();

@@ -153,16 +153,13 @@ const IndividualCourses = () => {
 
 
 
-    // A PDF fájlok gyors letöltése (ha nem volt letöltve)
     const downloadPdfIfNeeded = async (url) => {
-        // Ellenőrizzük, hogy a PDF már létezik-e a localStorage-ben
         if (!localStorage.getItem(url)) {
             try {
                 const response = await fetch(url);
                 const blob = await response.blob();
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    // Tároljuk a fájlt a localStorage-ben
                     localStorage.setItem(url, reader.result);
                 };
                 reader.readAsDataURL(blob);
@@ -174,7 +171,6 @@ const IndividualCourses = () => {
 
     const openPdfModal = (url) => {
         setPdfLoading(true);
-        // Letöltjük a PDF fájlt előre, ha szükséges
         downloadPdfIfNeeded(url);
         setCurrentPdfUrl(url);
         setIsModalOpen(true);
@@ -317,19 +313,6 @@ const IndividualCourses = () => {
                                                     <div key={index}>
                                                         <div className="practice-header">
                                                             <h4 className="practice-title">{practice.title}</h4>
-                                                            <svg
-                                                                className="sound-icon"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                height="24"
-                                                                viewBox="0 0 24 24"
-                                                                width="24"
-                                                            >
-                                                                <path d="M0 0h24v24H0z" fill="none"/>
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.26 2.5-4.02zM14 3.23v2.06c3.39.49 6 3.39 6 6.71s-2.61 6.22-6 6.71v2.06c4.45-.5 8-4.27 8-8.77s-3.55-8.27-8-8.77z"
-                                                                />
-                                                            </svg>
                                                         </div>
                                                         <br/>
                                                         <br/>
@@ -392,7 +375,7 @@ const IndividualCourses = () => {
                                                                 <span style={{
                                                                     fontSize: "20px",
                                                                     marginLeft: "10px"
-                                                                }}>🔒</span> // lakat ikon (unicode)
+                                                                }}>🔒</span>
                                                             )}
                                                         </div>
                                                     );

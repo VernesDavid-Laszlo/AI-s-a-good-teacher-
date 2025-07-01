@@ -1,17 +1,17 @@
-import { db } from '../firebase-config'; // A te Firebase config fájlod
+import { db } from '../firebase-config';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import searchingChapters from '../data/searchingChapters.json';
 
 const uploadSearchAlgorithms = async () => {
     try {
-        // Létrehozod a "courses" collection-t
+
         const coursesCollectionRef = collection(db, 'courses');
         const searchingAlgorithmsDocRef = doc(coursesCollectionRef, 'searchingAlgorithms');
 
-        // Létrehozod a "chapters" subcollection-t
+
         const chaptersCollectionRef = collection(searchingAlgorithmsDocRef, 'chapters');
 
-        // Feltöltöd az algoritmusokat
+
         for (const chapter of searchingChapters) {
             const chapterDocRef = doc(chaptersCollectionRef, chapter.id);
             await setDoc(chapterDocRef, {

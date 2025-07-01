@@ -1,4 +1,4 @@
-/* Universal styles for search algorithm animations */
+
 .search-container {
     display: flex;
     flex-direction: column;
@@ -28,17 +28,17 @@
     transition: background-color 0.3s, opacity 0.3s;
 }
 
-/* Highlight colors */
+
 .array-element.active {
-    background-color: #ffcc00; /* Currently checking */
+    background-color: #ffcc00;
 }
 
 .array-element.found {
-    background-color: #4CAF50; /* Target found */
+    background-color: #4CAF50;
 }
 
 .array-element.ignored {
-    opacity: 0.5; /* Elements not considered */
+    opacity: 0.5;
 }
 
 button {

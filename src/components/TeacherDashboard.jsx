@@ -1,4 +1,4 @@
-// TeacherDashboard.jsx (frissített a kéréseid szerint)
+// TeacherDashboard.jsx (translated to English)
 import { useEffect, useState } from 'react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase-config';
@@ -105,9 +105,9 @@ function TeacherDashboard() {
 
         return (
             <div className="mt-5">
-                <h4>Osztálystatisztikák</h4>
+                <h4>Class Statistics</h4>
                 <table className="table table-bordered">
-                    <thead><tr><th>Diák</th><th>Átlag</th></tr></thead>
+                    <thead><tr><th>Student</th><th>Average</th></tr></thead>
                     <tbody>
                     {avgPerStudent.map((s, i) => (
                         <tr key={i}><td>{s.name}</td><td>{s.avg}</td></tr>
@@ -115,21 +115,21 @@ function TeacherDashboard() {
                     </tbody>
                 </table>
                 <button className="btn btn-secondary mt-3" onClick={() => setShowChart(!showChart)}>
-                    {showChart ? 'Diagram elrejtése' : 'Diagram megjelenítése'}
+                    {showChart ? 'Hide Charts' : 'Show Charts'}
                 </button>
                 {showChart && (
                     <div className="mt-4">
                         <Bar data={{
                             labels: Object.keys(aiHelpUsagePerTest),
                             datasets: [{
-                                label: 'AI segítségek száma tesztenként',
+                                label: 'Number of AI helps per test',
                                 data: Object.values(aiHelpUsagePerTest),
                             }]
                         }}/>
                         <Bar className="mt-5" data={{
                             labels: Object.keys(aiHelpQuestions),
                             datasets: [{
-                                label: 'AI segítség kérdésenként',
+                                label: 'AI helps per question',
                                 data: Object.values(aiHelpQuestions),
                             }]
                         }}/>
@@ -144,17 +144,17 @@ function TeacherDashboard() {
             <div className="teacher-background">
                 <Header />
                 <div className="container mt-5">
-                    <h1 className="mb-4">Tanári Dashboard ({assignedCourse})</h1>
-                    {loading ? <p>Betöltés...</p> : (
+                    <h1 className="mb-4">Teacher Dashboard ({assignedCourse})</h1>
+                    {loading ? <p>Loading...</p> : (
                         <>
                             <div className="mb-3">
                                 <select onChange={e => setSortMethod(e.target.value)} className="form-select w-auto">
-                                    <option value="">Sorrend választása</option>
-                                    <option value="nameAsc">Név szerint A-Z</option>
-                                    <option value="nameDesc">Név szerint Z-A</option>
-                                    <option value="avgAsc">Átlag szerint növekvő</option>
-                                    <option value="avgDesc">Átlag szerint csökkenő</option>
-                                    <option value="onlyPass">Csak átmentek</option>
+                                    <option value="">Choose sorting method</option>
+                                    <option value="nameAsc">Name A-Z</option>
+                                    <option value="nameDesc">Name Z-A</option>
+                                    <option value="avgAsc">Average ascending</option>
+                                    <option value="avgDesc">Average descending</option>
+                                    <option value="onlyPass">Only passed</option>
                                 </select>
                             </div>
 
@@ -166,16 +166,16 @@ function TeacherDashboard() {
                                             className="btn btn-outline-primary w-100 text-start"
                                             onClick={() => setExpandedUser(expandedUser === i ? null : i)}
                                         >
-                                            {s.username} – Átlag: {avg}
+                                            {s.username} – AVG: {avg}
                                         </button>
 
                                         {expandedUser === i && (
                                             <div className="mt-2">
                                                 <table className="table table-sm">
-                                                    <thead><tr><th>Teszt</th><th>Pont</th><th>Átlag</th></tr></thead>
+                                                    <thead><tr><th>Test</th><th>Score</th></tr></thead>
                                                     <tbody>
                                                     {s.tests.map((t, j) => (
-                                                        <tr key={j}><td>{t.title}</td><td>{t.totalScore}</td><td>{avg}</td></tr>
+                                                        <tr key={j}><td>{t.title}</td><td>{t.totalScore}</td></tr>
                                                     ))}
                                                     </tbody>
                                                 </table>
@@ -183,7 +183,7 @@ function TeacherDashboard() {
                                                     className="btn btn-secondary"
                                                     onClick={() => setExpandedTests(expandedTests === i ? null : i)}
                                                 >
-                                                    {expandedTests === i ? 'Teszt részletek elrejtése' : 'Teszt részletek megjelenítése'}
+                                                    {expandedTests === i ? 'Hide test details' : 'Show test details'}
                                                 </button>
 
                                                 {expandedTests === i && (
@@ -191,9 +191,9 @@ function TeacherDashboard() {
                                                         {s.tests.map((t, k) => (
                                                             <div key={k} className="card mt-2">
                                                                 <div className="card-body">
-                                                                    <h5>{t.title} – {t.grade} ({t.totalScore} pont)</h5>
+                                                                    <h5>{t.title} – {t.grade} ({t.totalScore} points)</h5>
                                                                     <table className="table table-sm">
-                                                                        <thead><tr><th>#</th><th>Kérdés</th><th>Válasz</th><th>Helyes</th><th>Pont</th><th>AI</th></tr></thead>
+                                                                        <thead><tr><th>#</th><th>Question</th><th>Selected</th><th>Correct</th><th>Score</th><th>AI</th></tr></thead>
                                                                         <tbody>
                                                                         {t.questions?.map((q, qIndex) => (
                                                                             <tr key={qIndex}>
@@ -220,7 +220,7 @@ function TeacherDashboard() {
 
                             <hr className="my-5"/>
                             <button className="btn btn-info" onClick={() => setShowClassStats(!showClassStats)}>
-                                {showClassStats ? 'Statisztikák elrejtése' : 'Statisztikák megtekintése'}
+                                {showClassStats ? 'Hide statistics' : 'View statistics'}
                             </button>
                             {showClassStats && classStats()}
                         </>

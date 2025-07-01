@@ -23,7 +23,7 @@ const BubbleSortPractice = () => {
     };
 
     const handleCompareSelection = (index) => {
-        // Only allow selection of elements that are not finalized
+
         if (finalizedIndices.has(index)) {
             setMessage('This element is already sorted. Focus on the unsorted portion.');
             return;
@@ -36,12 +36,12 @@ const BubbleSortPractice = () => {
         } else if (selected.length === 1) {
             const firstIdx = selected[0];
 
-            // Check if selected elements are adjacent
+
             if (Math.abs(firstIdx - index) === 1) {
                 setSelected([firstIdx, index]);
                 highlightElement(index, 'yellow');
 
-                // Determine the correct action - swap or continue
+
                 if (array[firstIdx] > array[index] && firstIdx < index) {
                     setMessage('Elements need to be swapped. Click "Swap" button below.');
                     setExpectingAction('swap');
@@ -73,7 +73,7 @@ const BubbleSortPractice = () => {
                 : 'Incorrect! These elements are already in order.');
             setFeedback('❌');
 
-            // Flash error and reset after delay
+
             setTimeout(() => {
                 resetHighlighting();
                 setSelected([]);
@@ -133,23 +133,23 @@ const BubbleSortPractice = () => {
         const newComparisonsInPass = comparisonsInPass + 1;
         setComparisonsInPass(newComparisonsInPass);
 
-        // Check if we've completed all comparisons in this pass
+
         if (newComparisonsInPass >= array.length - 1 - currentPass) {
-            // Mark the largest element in this pass as finalized
+
             const newFinalizedIndices = new Set(finalizedIndices);
             newFinalizedIndices.add(array.length - 1 - currentPass);
             setFinalizedIndices(newFinalizedIndices);
 
-            // Highlight the newly sorted element
+
             const elements = document.querySelectorAll('.array-element');
             gsap.to(elements[array.length - 1 - currentPass], {
                 backgroundColor: 'green',
                 duration: 0.5
             });
 
-            // Check if sorting is complete
+
             if (currentPass === array.length - 2) {
-                // Add the last remaining element as sorted
+
                 newFinalizedIndices.add(0);
                 setFinalizedIndices(newFinalizedIndices);
                 gsap.to(elements[0], { backgroundColor: 'green', duration: 0.5 });
@@ -157,7 +157,7 @@ const BubbleSortPractice = () => {
                 setMessage('Sorting complete! Well done!');
                 setFeedback('🎉');
             } else {
-                // Move to the next pass
+
                 const nextPass = currentPass + 1;
                 setCurrentPass(nextPass);
                 setComparisonsInPass(0);
@@ -166,7 +166,7 @@ const BubbleSortPractice = () => {
                 setFeedback(null);
             }
         } else {
-            // Continue with the current pass
+
             setMessage('Select next two adjacent elements to compare');
             setExpectingAction('compare');
             setFeedback(null);

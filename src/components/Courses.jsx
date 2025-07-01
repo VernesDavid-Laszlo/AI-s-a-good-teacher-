@@ -12,17 +12,16 @@ function Courses() {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                // A 'courses' collection lekérése a Firebase-ból
+
                 const coursesCollection = collection(db, 'courses');
                 const courseSnapshot = await getDocs(coursesCollection);
 
-                // Az összes kurzus adatainak lekérése és a lista frissítése
+
                 const courseList = courseSnapshot.docs.map(doc => ({
                     id: doc.id,
-                    name: doc.data()?.coursename || 'Unnamed Course', // Biztonságos ellenőrzés
+                    name: doc.data()?.coursename || 'Unnamed Course',
                 }));
 
-                // A kurzusok frissítése az állapotban
                 setCourses(courseList);
             } catch (error) {
                 console.error("Error fetching courses:", error);
@@ -30,10 +29,10 @@ function Courses() {
         };
 
         fetchCourses();
-    }, []); // A hook csak egyszer fut le, amikor az oldal betöltődik
+    }, []);
 
     const handleClick = (id) => {
-        navigate(`/course/${id}`); // Navigálás a kiválasztott kurzus oldalára
+        navigate(`/course/${id}`);
     };
 
     return (
@@ -54,7 +53,7 @@ function Courses() {
                                 </div>
                             ))
                         ) : (
-                            <p>Loading courses...</p> // Ha nincsenek kurzusok, akkor ez jelenik meg
+                            <p>Loading courses...</p>
                         )}
                     </div>
                 </main>

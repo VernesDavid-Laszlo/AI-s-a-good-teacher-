@@ -17,7 +17,6 @@ function Notifications() {
             if (!user) return;
             const msgs = await getReceivedMessages(user.uid);
 
-            // Csoportosítás feladók szerint, és legfrissebb kiválasztása
             const uniqueBySender = {};
             for (const msg of msgs) {
                 if (!uniqueBySender[msg.sender] || msg.timestamp?.toMillis() > uniqueBySender[msg.sender].timestamp?.toMillis()) {
@@ -25,7 +24,6 @@ function Notifications() {
                 }
             }
 
-            // Felhasználónevek lekérése
             const enrichedMessages = await Promise.all(
                 Object.values(uniqueBySender).map(async (msg) => {
                     const senderRef = doc(db, "users", msg.sender);
@@ -67,7 +65,6 @@ function Notifications() {
                     ))}
                 </ul>
 
-                {/* Popup a kiválasztott diákkal való beszélgetéshez */}
                 {selectedUserId !== null && (
                     <ChatPopup
                         overrideRecipientId={selectedUserId}

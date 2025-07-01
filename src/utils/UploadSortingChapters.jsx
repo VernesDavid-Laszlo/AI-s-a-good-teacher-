@@ -1,17 +1,17 @@
-import { db } from '../firebase-config'; // A te Firebase config fájlod
+import { db } from '../firebase-config';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import sortingChapters from '../data/sortingChapters.json'; // Az általad létrehozott JSON fájl
+import sortingChapters from '../data/sortingChapters.json';
 
 const uploadSortingChapters = async () => {
     try {
-        // Létrehozod a "courses" collection-t
+
         const coursesCollectionRef = collection(db, 'courses');
         const sortingAlgorithmsDocRef = doc(coursesCollectionRef, 'sortingAlgorithms');
 
-        // Létrehozod a "chapters" subcollection-t
+
         const chaptersCollectionRef = collection(sortingAlgorithmsDocRef, 'chapters');
 
-        // Feltöltöd az algoritmusokat
+
         for (const chapter of sortingChapters) {
             const chapterDocRef = doc(chaptersCollectionRef, chapter.id);
             await setDoc(chapterDocRef, {

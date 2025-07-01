@@ -4,7 +4,7 @@ import { auth, db } from '../firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
-import '../styles/Home.css'; // Import custom CSS
+import '../styles/Home.css';
 
 
 function Home() {

@@ -27,7 +27,6 @@ function ChatAI({ onToggle, mode = 'individual', currentQuestionText = '', aiHel
     }, []);
 
     useEffect(() => {
-        // ha kívülről már elértük a limitet → letiltjuk AI választ
         if (aiHelpCount >= 3) {
             setLimitReached(true);
         }
@@ -90,7 +89,6 @@ function ChatAI({ onToggle, mode = 'individual', currentQuestionText = '', aiHel
             if (reply) {
                 setMessages([...newMessages, { sender: 'ai', text: reply }]);
 
-                // Jelzünk a TestPage-nek, hogy egy új AI válasz történt
                 if (onAIResponse) {
                     onAIResponse();
                 }

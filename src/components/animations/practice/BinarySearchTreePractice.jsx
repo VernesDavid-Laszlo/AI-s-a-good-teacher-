@@ -100,7 +100,7 @@ const BstPractice = () => {
 
         if ((target < currentNode.value && node.value === currentNode.left?.value) ||
             (target > currentNode.value && node.value === currentNode.right?.value)) {
-            // Gray out the wrong subtree
+
             if (target < currentNode.value) {
                 grayOutSubtree(currentNode.right);
             } else {

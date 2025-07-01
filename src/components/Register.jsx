@@ -15,26 +15,20 @@ function Register() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            // Create user with email and password
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-
-            // Send verification email
             await sendEmailVerification(user);
             alert('Verification email sent. Please check your inbox.');
-
-            // Save user data to Firestore with 'approved: false' for teachers
             await setDoc(doc(db, "users", user.uid), {
                 email: user.email,
                 username: username,
                 role: parseInt(role),
-                approved: role === "1" ? false : true, // Teachers require approval
+                approved: role === "1" ? false : true,
             });
 
-            // Sign out the user to prevent automatic login before approval
             await signOut(auth);
             alert('Registration complete. If you registered as a teacher, wait for admin approval.');
-            navigate('/login'); // Navigate to login page
+            navigate('/login');
         } catch (error) {
             console.error("Error registering user", error);
             alert(error.message);

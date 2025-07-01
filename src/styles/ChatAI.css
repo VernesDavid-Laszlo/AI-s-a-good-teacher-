@@ -1,4 +1,4 @@
-/* Chat toggle gomb */
+
 .chat-toggle-button {
     position: fixed;
     right: 0 !important;
@@ -40,7 +40,6 @@
     display: inline;
 }
 
-/* Chat container */
 .chat-ai-container {
     position: fixed;
     bottom: 3px;
@@ -56,7 +55,6 @@
     z-index: 9999;
 }
 
-/* Header */
 .chat-ai-header {
     background-color: #6200ea;
     color: white;
@@ -69,15 +67,15 @@
     cursor: pointer;
 }
 
-/* Messages */
+
 .chat-ai-messages {
     flex: 1;
     overflow-y: auto;
     background-color: #f9f9f9;
     padding: 10px;
 
-    display: flex; /* EZ a fontos!!! */
-    flex-direction: column; /* hogy az üzenetek oszlopban legyenek */
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-message {
@@ -89,29 +87,29 @@
     word-wrap: break-word;
 }
 
-/* Sender message */
+
 .sender {
     background-color: #6200ea;
     color: white;
-    align-self: flex-end; /* jobb oldalra */
+    align-self: flex-end;
     padding: 10px 15px;
     border-radius: 15px 15px 0 15px;
     max-width: 90%;
     text-align: left;
 }
 
-/* Receiver message */
+
 .receiver {
     background-color: #f1f0f0;
     color: black;
-    align-self: flex-start; /* bal oldalra */
+    align-self: flex-start;
     padding: 10px 15px;
     border-radius: 15px 15px 15px 0;
     max-width: 90%;
     text-align: left;
 }
 
-/* Input */
+
 .chat-ai-input {
     border-top: 1px solid #ccc;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './BubbleSortAnimation.css'; // Módosított CSS import
+import './BubbleSortAnimation.css';
 
 const bubbleSortSteps = (array) => {
     const arr = [...array];
@@ -17,11 +17,9 @@ const bubbleSortSteps = (array) => {
                 steps.push({ type: 'swap', indices: [i, i + 1], array: [...arr] });
             }
         }
-        // Az aktuálisan a helyére került elemet azonnal megjelöljük
         steps.push({ type: 'sorted', index: arr.length - 1 - steps.filter(step => step.type === 'sorted').length });
     } while (swapped);
 
-    // Az összes elemet megjelöljük a rendezes végén
     for (let i = 0; i < arr.length; i++) {
         steps.push({ type: 'sorted', index: i });
     }
@@ -47,7 +45,6 @@ const BubbleSortAnimation = () => {
             setCurrentStep(0);
             setIsSorting(false);
 
-            // Alaphelyzet visszaállítása
             const elements = document.querySelectorAll('.bubble-array-element');
             elements.forEach(el => {
                 el.classList.remove('bubble-compare', 'bubble-sorted');
@@ -63,7 +60,6 @@ const BubbleSortAnimation = () => {
             return;
         }
 
-        // Alaphelyzet visszaállítása
         const elements = document.querySelectorAll('.bubble-array-element');
         elements.forEach(el => {
             el.classList.remove('bubble-compare', 'bubble-sorted');
@@ -88,7 +84,7 @@ const BubbleSortAnimation = () => {
 
         const timeout = setTimeout(() => {
             setCurrentStep((prev) => prev + 1);
-        }, 1000); // Minden lépés 1 másodpercig tart
+        }, 1000);
 
         return () => clearTimeout(timeout);
     }, [isSorting, currentStep, steps]);
@@ -108,14 +104,12 @@ const BubbleSortAnimation = () => {
         const elements = document.querySelectorAll('.bubble-array-element');
         const [firstIdx, secondIdx] = indices;
 
-        // Felemelt elemek animációja
         const firstElement = elements[firstIdx];
         const secondElement = elements[secondIdx];
 
         gsap.to(firstElement, { y: -50, duration: 0.5 });
         gsap.to(secondElement, { y: -50, duration: 0.5 });
 
-        // Helycsere animációja
         setTimeout(() => {
             setCurrentArray(newArray);
 

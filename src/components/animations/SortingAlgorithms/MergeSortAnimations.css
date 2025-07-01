@@ -60,7 +60,7 @@
     margin: 50px 0;
     gap: 10px;
     position: relative;
-    height: 120px; /* Extra height for floating elements */
+    height: 120px;
 }
 
 .merge-array-element {
@@ -139,7 +139,7 @@
     text-align: left;
 }
 
-/* Animation for placing an element */
+
 @keyframes pulse {
     0% {
         transform: scale(1);

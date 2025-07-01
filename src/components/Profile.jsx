@@ -113,9 +113,6 @@ function Profile() {
                                 </>
                             )}
                         </div>
-                        <div className="d-flex justify-content-end mt-3">
-                            <button className="btn btn-primary">Edit profile</button>
-                        </div>
                     </div>
                 </div>
             </main>
