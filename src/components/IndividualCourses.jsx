@@ -49,6 +49,8 @@ const IndividualCourses = () => {
     const navigate = useNavigate();
     const { id: courseId } = useParams();
     const [completedTests, setCompletedTests] = useState([]);
+    const [uploadModalState, setUploadModalState] = useState({ open: false, chapterId: null });
+
 
 
 
@@ -421,7 +423,7 @@ const IndividualCourses = () => {
                         overlayClassName="upload-overlay"
                     >
                         <button onClick={closeUploadLessonModal} className="close-button">✖</button>
-                        <UploadLessons/>
+                        <UploadLessons chapterId={uploadModalState.chapterId} />
                     </Modal>
 
                 </main>
